@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>KONTROLA GRADA | Urbex Archive</title>
+    <style>
+        :root { --green: #00ff41; --bg: #050505; }
+        body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; overflow-x: hidden; }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
+        nav { border-bottom: 1px solid var(--green); padding: 15px; display: flex; gap: 20px; justify-content: center; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
+        .btn { cursor: pointer; text-transform: uppercase; font-weight: bold; padding: 5px 10px; }
+        .section { display: none; padding: 20px; max-width: 1200px; margin: auto; }
+        .active { display: block; }
+        .sekcija-container { margin-bottom: 60px; }
+        .sekcija-naslov { color: var(--green); text-align: center; border-bottom: 2px solid var(--green); border-top: 2px solid var(--green); padding: 10px; margin: 30px 0; text-transform: uppercase; letter-spacing: 5px; background: rgba(0, 255, 65, 0.1); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; }
+        .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: scale(1.02); }
+        .card img, .card video { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; pointer-events: none; }
+        
+        /* POPRAVLJEN MODAL ZA VIDEO */
+        #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
+        .modal-box { position: relative; max-width: 900px; width: 95%; margin: 50px auto; border: 1px solid var(--green); background: #000; padding: 10px; box-shadow: 0 0 30px rgba(0,255,65,0.2); }
+        #preview-content { width: 100%; height: 70vh; border: none; background: #000; }
+        .close-btn { position: absolute; top: -50px; right: 0; font-size: 50px; cursor: pointer; color: var(--green); }
+        
+        #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; text-align: center; }
+        .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
+        input { background: #000; border: 1px solid var(--green); color: var(--green); padding: 10px; text-align: center; margin: 10px; outline: none; width: 250px; font-size: 1.2em; }
+        button { background: var(--green); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="login">
+    <div class="box">
+        <h1 style="letter-spacing: 10px;">KONTROLA GRADA</h1>
+        <p>> PRISTUP URBEX SISTEMU <</p>
+        <input type="password" id="pass" placeholder="PASSWORD_REQUIRED">
+        <br>
+        <button onclick="check()">OTKLJUČAJ</button>
+    </div>
+</div>
+
+<div id="main" style="display:none;">
+    <nav>
+        <div class="btn" onclick="show('panel')">Status Panel</div>
+        <div class="btn" onclick="show('arhiva')">Arhiva Media</div>
+        <div class="btn" onclick="location.reload()" style="color:red">Log Out</div>
+    </nav>
+
+    <div id="panel" class="section active">
+        <h1>SYSTEM READY</h1>
+        <div style="border: 1px dashed var(--green); padding: 20px;">
+            <p>> KONEKCIJA: AKTIVNA</p>
+            <p>> ADMIN: SINHRONIZOVAN</p>
+            <p>> LOKACIJA FAJLOVA: D:\URBEX</p>
+        </div>
+    </div>
+
+    <div id="arhiva" class="section">
+        <h1>ARHIVA SNIMAKA (MEDIA)</h1>
+        <div id="arhiva-kontener"></div>
+    </div>
+</div>
+
+<div id="preview">
+    <div class="modal-box">
+        <span class="close-btn" onclick="closePreview()">&times;</span>
+        <h2 id="preview-title" style="margin-bottom: 15px; color: var(--green); letter-spacing: 2px;"></h2>
+        <div id="media-holder"></div>
+    </div>
+</div>
+
+<script>
+    // --- OVDE DODAJES SVOJE SNIMKE I SEKCIJE ---
+    const MOJA_ARHIVA = [
+        {
+            naslovSekcije: "SEKCIJA 1 - PANČEVO",
+            fajlovi: [
+                { ime: "NAPUŠTENA FABRIKA", tip: "video", url: "https://www.w3schools.com/html/mov_bbb.mp4", datum: "17.02.2026." },
+                { ime: "HODNIK_S1", tip: "slika", url: "https://via.placeholder.com/800x600?text=Urbex+S1", datum: "17.02.2026." }
+            ]
+        },
+        {
+            naslovSekcije: "SEKCIJA 2 - BEOGRAD",
+            fajlovi: [
+                { ime: "TUNEL_01", tip: "video", url: "https://www.w3schools.com/html/movie.mp4", datum: "17.02.2026." }
+            ]
+        }
+    ];
+
+    const SIFRA = "29012001kontrola";
+
+    // --- LOGIKA POZADINE (MATRIX) ---
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let pts = [];
+    function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    class Pt {
+        constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; }
+        upd() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
+    }
+    function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = '#004d1a';
+        pts.forEach(p => {
+            p.upd();
+            pts.forEach(p2 => {
+                let d = Math.hypot(p.x-p2.x, p.y-p2.y);
+                if(d<150) { ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p2.x,p2.y); ctx.stroke(); }
+            });
+        });
+        requestAnimationFrame(draw);
+    }
+    init(); for(let i=0;i<80;i++) pts.push(new Pt()); draw();
+    window.addEventListener('resize', init);
+
+    // --- FUNKCIJE SAJTA ---
+    function check() { 
+        if(document.getElementById('pass').value === SIFRA) { 
+            document.getElementById('login').style.display='none'; 
+            document.getElementById('main').style.display='block'; 
+            load(); 
+        } else { alert("ACCESS DENIED"); } 
+    }
+    function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function load() {
+        const cont = document.getElementById('arhiva-kontener'); cont.innerHTML = "";
+        MOJA_ARHIVA.forEach((s, si) => {
+            let html = `<div class="sekcija-container"><div class="sekcija-naslov">${s.naslovSekcije}</div><div class="grid" id="g-${si}"></div></div>`;
+            cont.innerHTML += html;
+            s.fajlovi.forEach((f, fi) => {
+                document.getElementById(`g-${si}`).innerHTML += `<div class="card" onclick="openF(${si},${fi})"><span>${f.datum}</span>${f.tip==='video' ? `<video src="${f.url}"></video>` : `<img src="${f.url}">`}<h3>${f.ime}</h3></div>`;
+            });
+        });
+    }
+    function openF(si, fi) {
+        const f = MOJA_ARHIVA[si].fajlovi[fi];
+        document.getElementById('preview-title').innerText = f.ime;
+        const holder = document.getElementById('media-holder');
+        
+        if(f.tip === 'video') {
+            // Dodajemo sandbox i dozvole da bi video radio lakše
+            holder.innerHTML = `<iframe id="preview-content" src="${f.url}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        } else {
+            holder.innerHTML = `<img id="preview-content" src="${f.url}" style="object-fit: contain;">`;
+        }
+        document.getElementById('preview').style.display = 'block';
+    }
+    function closePreview() {
+        document.getElementById('media-holder').innerHTML = ""; // Gasimo video kad zatvorimo
+        document.getElementById('preview').style.display = 'none';
+    }
+</script>
+</body>
+</html>
