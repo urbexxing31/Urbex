@@ -17,15 +17,32 @@
         .btn:hover { border-color: var(--green); background: rgba(0,255,65,0.1); }
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; }
         .active { display: block; }
-        .sekcija-naslov { color: var(--green); text-align: center; border: 2px solid var(--green); padding: 10px; margin: 30px 0; text-transform: uppercase; letter-spacing: 5px; background: rgba(0, 255, 65, 0.1); }
+        
+        /* STRELICE I NASLOVI SEKCIJA */
+        .sekcija-naslov { 
+            color: var(--green); 
+            text-align: center; 
+            border: 2px solid var(--green); 
+            padding: 10px; 
+            margin: 30px 0; 
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
+            background: rgba(0, 255, 65, 0.1);
+            position: relative;
+        }
+        .sekcija-naslov::before { content: ">>> "; color: var(--green); }
+        .sekcija-naslov::after { content: " <<<"; color: var(--green); }
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
         .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: translateY(-5px); }
         .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; }
+        
         #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; justify-content: center; align-items: center; text-align: center; }
         .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
         input, textarea, select { background: #000; border: 1px solid var(--green); color: var(--green); padding: 12px; margin: 10px 0; outline: none; width: 100%; font-family: 'Courier New', monospace; box-sizing: border-box; }
         button { background: var(--green); border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; margin-top: 10px; }
+        
         #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
         .modal-box { position: relative; max-width: 1000px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; }
         #preview-content { width: 100%; height: 70vh; border: none; }
@@ -103,7 +120,7 @@
                 <label>LINK ZA SLIKU/VIDEO (GOOGLE DRIVE):</label>
                 <input type="text" name="link" placeholder="https://drive.google.com/..." required>
                 <div class="important-note">
-                    <b>OBAVEZNO:</b> Morate staviti sliku ili video u Google Drive i u "Share" opcijama podesiti na <b>"Everyone who has link"</b>.
+                    <b>OBAVEZNO:</b> Podesite Google Drive fajl na <b>"Everyone who has link"</b> pre slanja.
                 </div>
                 <label>NAPOMENA / LOKACIJA:</label>
                 <textarea name="napomena" placeholder="Unesite detalje lokacije..."></textarea>
@@ -117,7 +134,7 @@
         <div style="border: 1px solid #ffcc00; padding: 20px;">
             <p>> GENERATOR KODA:</p>
             <input type="text" id="adm-name" placeholder="Ime Videa/Slike">
-            <input type="text" id="adm-url" placeholder="Google Drive Preview Link">
+            <input type="text" id="adm-url" placeholder="Google Drive Link">
             <select id="adm-type"><option value="video">VIDEO</option><option value="slika">SLIKA</option></select>
             <button style="background: #ffcc00; color: #000;" onclick="genCode()">GENERIŠI KOD</button>
             <pre id="code-output" style="color: white; background: #111; padding: 15px; border: 1px solid #333; white-space: pre-wrap; font-size: 0.75em; margin-top:10px;"></pre>
@@ -145,107 +162,91 @@
     }
     function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
-    // --- TVOJI ORIGINALNI PODACI (VRAĆENI SVI LINKOVI) ---
     const MOJA_ARHIVA = [
-        {
-            naslovSekcije: "-VIDEI- SEKCIJA 1 - ŠTAMPARIJA",
-            fajlovi: [
-                { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1p--S8zpIhUN_Mt6heh2Dh7jmY3G54Ukr/preview", datum: "13.12.2025" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1wi7Gom8qGIW-yx2maO_oheGGnjADR3iy/preview", datum: "13.12.2025" },
-                { ime: "Video 3", tip: "video", url: "https://drive.google.com/file/d/1hfXxiUUXCoFrK3zzxWtfh0dmUotrNLRC/preview", datum: "13.12.2025" },
-                { ime: "Video 4", tip: "video", url: "https://drive.google.com/file/d/1wMdFBlKuvv63CPfn9HqWFbTsfEoJZ22r/preview", datum: "NEPOZNATO" },
-                { ime: "Video 5", tip: "video", url: "https://drive.google.com/file/d/1oH9Mfc63uxjIoThrCHLesdhXYgw-C_oU/preview", datum: "NEPOZNATO" },
-                { ime: "Video 6", tip: "video", url: "https://drive.google.com/file/d/1L1fTno8D9JgnoDXgr8Ycox3xJiHZf_qk/preview", datum: "NEPOZNATO" }
-            ]
-        },
-        {
-            naslovSekcije: "SEKCIJA 2 - PIVARA",
-            fajlovi: [
-                { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1elgBCMu24HA7mY-JM1jcXc6GHfTeHgYN/preview", datum: "NEPOZNATO" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1p7ZicskGiyj9bHDokJpNX-oUevV45xNI/preview", datum: "NEPOZNATO" }
-            ]
-        },
-        {
-            naslovSekcije: "SEKCIJA 3 - OBLAST 013",
-            fajlovi: [
-                { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1OGUexzSH9Vx1yW8fom3L2n7n__cgcBmY/preview", datum: "NEPOZNATO" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1GoGjnAvQAq1sopRNgDc3Niju01Cgp5QW/preview", datum: "NEPOZNATO" },
-                { ime: "Video 3", tip: "video", url: "https://drive.google.com/file/d/1hYpcJ496B0CZFzyUQJD38iPeRWL28PpI/preview", datum: "NEPOZNATO" },
-                { ime: "Video 4", tip: "video", url: "https://drive.google.com/file/d/1Esk0TCMkIALr0K_4qpYaor3JGLRqcUbc/preview", datum: "NEPOZNATO" },
-                { ime: "Video 5", tip: "video", url: "https://drive.google.com/file/d/1oFmDDLJCv3RXU7C_8hChbQpZuHWlTLi6/preview", datum: "NEPOZNATO" },
-                { ime: "Video 6", tip: "video", url: "https://drive.google.com/file/d/1G82zzP5gkDXKYsTjkJglWSS5SitipB_6/preview", datum: "NEPOZNATO" },
-                { ime: "Video 7", tip: "video", url: "https://drive.google.com/file/d/11lR4tbKZ0Y-QPAmxklSRbqPLxj1CBTiB/preview", datum: "NEPOZNATO" },
-                { ime: "Video 8", tip: "video", url: "https://drive.google.com/file/d/13uM9mo9DjfhljnbP0ObyRsmiQiDUwTWY/preview", datum: "NEPOZNATO" },
-                { ime: "Video 9", tip: "video", url: "https://drive.google.com/file/d/11yLMhxA86trAaE6aEijicRUbIL8QCYnv/preview", datum: "NEPOZNATO" },
-                { ime: "Video 10", tip: "video", url: "https://drive.google.com/file/d/1NkbaIIjYX6UGOuMMNB-7u78daRS4cXf5/preview", datum: "NEPOZNATO" },
-                { ime: "Video 11", tip: "video", url: "https://drive.google.com/file/d/1VXZ2vpoe8AEfC0WU73sGzR39vetnAGFE/preview", datum: "NEPOZNATO" },
-                { ime: "Video 12", tip: "video", url: "https://drive.google.com/file/d/1TJ--2_xs36ld9NPnHXWg5C3JCBHpZq-E/preview", datum: "NEPOZNATO" },
-                { ime: "Video 13", tip: "video", url: "https://drive.google.com/file/d/1-f0YlDE9wUXOjF0dE9eAT69F9BVSnKQd/preview", datum: "NEPOZNATO" }
-            ]
-        },
-        {
-            naslovSekcije: "SEKCIJA 4 - NAPUŠTENA KLANICA",
-            fajlovi: [
-                { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1PSRZIt-HP86NAAS_uSVuIrv9XpGAZFX8/preview", datum: "NEPOZNATO" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/11Y72TgpPMuNGOXZtHIW8Qw9FfcoC6Ds0/preview", datum: "NEPOZNATO" }
-            ]
-        },
-        {
-            naslovSekcije: "-SLIKE- SEKCIJA 5 - ARHIVA SLIKA",
-            fajlovi: [
-                { ime: "Slika 1", tip: "slika", url: "https://drive.google.com/thumbnail?id=17syPiLTIjU4UO8TRnQyht4eLtEW2YKNL&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 2", tip: "slika", url: "https://drive.google.com/thumbnail?id=1590QaofLiEZyTW4mnowOsyFVY2ue2LrA&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 3", tip: "slika", url: "https://drive.google.com/thumbnail?id=1iYP2REvF7QMzAq80ONWCnpYEWerd5JL_&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 4", tip: "slika", url: "https://drive.google.com/thumbnail?id=1_ei_KjVurEyHyG4kyV0yKyG5t0_upblz&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 5", tip: "slika", url: "https://drive.google.com/thumbnail?id=1Krk5B-oGvzDr0IhxVqBvwsyYTEGXOUM8&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 6", tip: "slika", url: "https://drive.google.com/thumbnail?id=1mzCsQpyvcqUfISt3FusP6J6Mz7r6LauX&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 7", tip: "slika", url: "https://drive.google.com/thumbnail?id=1p8IOBBHNVCmONZsU01UiiPzj9olttW3e&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 8", tip: "slika", url: "https://drive.google.com/thumbnail?id=1s3yzr2GFE0LwEhU9Q6-Q2qSFDXM_oie9&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 9", tip: "slika", url: "https://drive.google.com/thumbnail?id=1pp1QwAspsuOIhPOQVCY87C3Kvz8aC2rv&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 10", tip: "slika", url: "https://drive.google.com/thumbnail?id=17mP28kD-EkpO4uXq6slsPtQSVThJmT-8&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 11", tip: "slika", url: "https://drive.google.com/thumbnail?id=1JfixZgHS-HBbB7J8GO6oZSzaaGxbv3L7&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 12", tip: "slika", url: "https://drive.google.com/thumbnail?id=1gct9lglN5sRpOMX2dcfBB717l8RmL-mi&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 13", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wq_CgiqmT4Zw7HgdjgIZUDHTWbMdVgBs&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 14", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WOMShIi6hTTYXuuGR8Oz0Wvxcwql5Ebq&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 15", tip: "slika", url: "https://drive.google.com/thumbnail?id=11jhWuG1s0IAdH2VgBymTxF-YKaO4XbcO&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 16", tip: "slika", url: "https://drive.google.com/thumbnail?id=1S5TpD0KnuALYxVYSj8CdX8rB27s2517a&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 17", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WCM_ixmavfjKreAsBio0-lHk3hcPTB8H&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 18", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wa-r8qpSpgq40Fzzn8zPeK4wyGhLxCDl&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 19", tip: "slika", url: "https://drive.google.com/thumbnail?id=1FSbJmeH4BoObkZPSx4QIcH6-xxmOnL2a&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 20", tip: "slika", url: "https://drive.google.com/thumbnail?id=1PEw7pvthBX7V6r3BKNmOmW9-EtZ2rYd1&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 21", tip: "slika", url: "https://drive.google.com/thumbnail?id=1TzUSwVtKmSRlaE9dukjT_VoIScuXJ-Lr&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 22", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wI49ckhmA-JZlELTf5UI56lP1b6_mvq8&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 23", tip: "slika", url: "https://drive.google.com/thumbnail?id=1XU-h8MsJ3dZ8wCW8-WzBU3rbb4p9uNzW&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 24", tip: "slika", url: "https://drive.google.com/thumbnail?id=1ArqvLdBPhv2XxNiqyxz1aE2cS57Kibi-&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 25", tip: "slika", url: "https://drive.google.com/thumbnail?id=1MBcqWdkz4xgInXATIMCaU1kvH-poV-Nj&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 26", tip: "slika", url: "https://drive.google.com/thumbnail?id=1CFG0lWqWE8HJ6pxMo5MO2skiNOo-wHwe&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 27", tip: "slika", url: "https://drive.google.com/thumbnail?id=1FVtOP58XWB9zgcnGO6weOhTcUbgZ7WaQ&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 28", tip: "slika", url: "https://drive.google.com/thumbnail?id=1xUB4o6J35qRvHk8nWwnxs4CsVuXyKWC9&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 29", tip: "slika", url: "https://drive.google.com/thumbnail?id=1KkOy6JQWsRsDfQWtgSAVr9tUU6551Ls-&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 30", tip: "slika", url: "https://drive.google.com/thumbnail?id=17zfRVijdXKMsRXaUnJ_tfiEgPu_x8hrG&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 31", tip: "slika", url: "https://drive.google.com/thumbnail?id=1fhooWW7xi_iJ_bIlejdhyqpVB9qVpSvh&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 32", tip: "slika", url: "https://drive.google.com/thumbnail?id=1T35-LcW-NDATjzvaCfIeLwxMWFtFi5MF&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 33", tip: "slika", url: "https://drive.google.com/thumbnail?id=1-_knEDvMHGfqqT6vZTteSdQcfrIyP4zG&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 34", tip: "slika", url: "https://drive.google.com/thumbnail?id=1eNTliOafTB_iHjxF3q5w2s2EsWwMp72E&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 35", tip: "slika", url: "https://drive.google.com/thumbnail?id=12Mfrkg72oMHCw7OjQPl9Ld4kIuDJvhov&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 36", tip: "slika", url: "https://drive.google.com/thumbnail?id=1-t13WWSY34o1JFzWVqxoJ-8e8o8QZK7q&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 37", tip: "slika", url: "https://drive.google.com/thumbnail?id=1VNccLFnVaI6j4qss6oTyVEGAYVrfTXLs&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 38", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WJEsFxNVr1x7ZWuw0Uff1ADwAae2fByc&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 39", tip: "slika", url: "https://drive.google.com/thumbnail?id=1yBxU2rEGC107EFph6sGBjN1kSyL-X6HA&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 40", tip: "slika", url: "https://drive.google.com/thumbnail?id=19F_fYYq1poAjv4lJm8sMgUs0nHK39LLz&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 41", tip: "slika", url: "https://drive.google.com/thumbnail?id=1M4H1J1Fl1XK9WlyU_YNanUlAzw7zPzYj&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 42", tip: "slika", url: "https://drive.google.com/thumbnail?id=1Q74BQzdDNBcJSDF8sYfgOhyQV47JgmE5&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 43", tip: "slika", url: "https://drive.google.com/thumbnail?id=1_F5YxVS3PbgkSyioZkq4Cj4DufWQUZgc&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 44", tip: "slika", url: "https://drive.google.com/thumbnail?id=1LWC0PJrf1q5N6Wcwb8ZpW1hF9_Q-19e4&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 45", tip: "slika", url: "https://drive.google.com/thumbnail?id=1mzCsQpyvcqUfISt3FusP6J6Mz7r6LauX&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 46", tip: "slika", url: "https://drive.google.com/thumbnail?id=1dymQMQ7IweFVL-ie6xXpj-36NlAy6BvM&sz=w1000", datum: "NEPOZNATO" }
-            ]
-        }
+        { naslovSekcije: "SEKCIJA 1 - ŠTAMPARIJA", fajlovi: [
+            { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1p--S8zpIhUN_Mt6heh2Dh7jmY3G54Ukr/preview", datum: "13.12.2025" },
+            { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1wi7Gom8qGIW-yx2maO_oheGGnjADR3iy/preview", datum: "13.12.2025" },
+            { ime: "Video 3", tip: "video", url: "https://drive.google.com/file/d/1hfXxiUUXCoFrK3zzxWtfh0dmUotrNLRC/preview", datum: "13.12.2025" },
+            { ime: "Video 4", tip: "video", url: "https://drive.google.com/file/d/1wMdFBlKuvv63CPfn9HqWFbTsfEoJZ22r/preview", datum: "NEPOZNATO" },
+            { ime: "Video 5", tip: "video", url: "https://drive.google.com/file/d/1oH9Mfc63uxjIoThrCHLesdhXYgw-C_oU/preview", datum: "NEPOZNATO" },
+            { ime: "Video 6", tip: "video", url: "https://drive.google.com/file/d/1L1fTno8D9JgnoDXgr8Ycox3xJiHZf_qk/preview", datum: "NEPOZNATO" }
+        ]},
+        { naslovSekcije: "SEKCIJA 2 - PIVARA", fajlovi: [
+            { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1elgBCMu24HA7mY-JM1jcXc6GHfTeHgYN/preview", datum: "NEPOZNATO" },
+            { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1p7ZicskGiyj9bHDokJpNX-oUevV45xNI/preview", datum: "NEPOZNATO" }
+        ]},
+        { naslovSekcije: "SEKCIJA 3 - OBLAST 013", fajlovi: [
+            { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1OGUexzSH9Vx1yW8fom3L2n7n__cgcBmY/preview", datum: "NEPOZNATO" },
+            { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1GoGjnAvQAq1sopRNgDc3Niju01Cgp5QW/preview", datum: "NEPOZNATO" },
+            { ime: "Video 3", tip: "video", url: "https://drive.google.com/file/d/1hYpcJ496B0CZFzyUQJD38iPeRWL28PpI/preview", datum: "NEPOZNATO" },
+            { ime: "Video 4", tip: "video", url: "https://drive.google.com/file/d/1Esk0TCMkIALr0K_4qpYaor3JGLRqcUbc/preview", datum: "NEPOZNATO" },
+            { ime: "Video 5", tip: "video", url: "https://drive.google.com/file/d/1oFmDDLJCv3RXU7C_8hChbQpZuHWlTLi6/preview", datum: "NEPOZNATO" },
+            { ime: "Video 6", tip: "video", url: "https://drive.google.com/file/d/1G82zzP5gkDXKYsTjkJglWSS5SitipB_6/preview", datum: "NEPOZNATO" },
+            { ime: "Video 7", tip: "video", url: "https://drive.google.com/file/d/11lR4tbKZ0Y-QPAmxklSRbqPLxj1CBTiB/preview", datum: "NEPOZNATO" },
+            { ime: "Video 8", tip: "video", url: "https://drive.google.com/file/d/13uM9mo9DjfhljnbP0ObyRsmiQiDUwTWY/preview", datum: "NEPOZNATO" },
+            { ime: "Video 9", tip: "video", url: "https://drive.google.com/file/d/11yLMhxA86trAaE6aEijicRUbIL8QCYnv/preview", datum: "NEPOZNATO" },
+            { ime: "Video 10", tip: "video", url: "https://drive.google.com/file/d/1NkbaIIjYX6UGOuMMNB-7u78daRS4cXf5/preview", datum: "NEPOZNATO" },
+            { ime: "Video 11", tip: "video", url: "https://drive.google.com/file/d/1VXZ2vpoe8AEfC0WU73sGzR39vetnAGFE/preview", datum: "NEPOZNATO" },
+            { ime: "Video 12", tip: "video", url: "https://drive.google.com/file/d/1TJ--2_xs36ld9NPnHXWg5C3JCBHpZq-E/preview", datum: "NEPOZNATO" },
+            { ime: "Video 13", tip: "video", url: "https://drive.google.com/file/d/1-f0YlDE9wUXOjF0dE9eAT69F9BVSnKQd/preview", datum: "NEPOZNATO" }
+        ]},
+        { naslovSekcije: "SEKCIJA 4 - NAPUŠTENA KLANICA", fajlovi: [
+            { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1PSRZIt-HP86NAAS_uSVuIrv9XpGAZFX8/preview", datum: "NEPOZNATO" },
+            { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/11Y72TgpPMuNGOXZtHIW8Qw9FfcoC6Ds0/preview", datum: "NEPOZNATO" }
+        ]},
+        { naslovSekcije: "SEKCIJA 5 - ARHIVA SLIKA", fajlovi: [
+            { ime: "Slika 1", tip: "slika", url: "https://drive.google.com/thumbnail?id=17syPiLTIjU4UO8TRnQyht4eLtEW2YKNL&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 2", tip: "slika", url: "https://drive.google.com/thumbnail?id=1590QaofLiEZyTW4mnowOsyFVY2ue2LrA&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 3", tip: "slika", url: "https://drive.google.com/thumbnail?id=1iYP2REvF7QMzAq80ONWCnpYEWerd5JL_&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 4", tip: "slika", url: "https://drive.google.com/thumbnail?id=1_ei_KjVurEyHyG4kyV0yKyG5t0_upblz&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 5", tip: "slika", url: "https://drive.google.com/thumbnail?id=1Krk5B-oGvzDr0IhxVqBvwsyYTEGXOUM8&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 6", tip: "slika", url: "https://drive.google.com/thumbnail?id=1mzCsQpyvcqUfISt3FusP6J6Mz7r6LauX&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 7", tip: "slika", url: "https://drive.google.com/thumbnail?id=1p8IOBBHNVCmONZsU01UiiPzj9olttW3e&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 8", tip: "slika", url: "https://drive.google.com/thumbnail?id=1s3yzr2GFE0LwEhU9Q6-Q2qSFDXM_oie9&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 9", tip: "slika", url: "https://drive.google.com/thumbnail?id=1pp1QwAspsuOIhPOQVCY87C3Kvz8aC2rv&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 10", tip: "slika", url: "https://drive.google.com/thumbnail?id=17mP28kD-EkpO4uXq6slsPtQSVThJmT-8&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 11", tip: "slika", url: "https://drive.google.com/thumbnail?id=1JfixZgHS-HBbB7J8GO6oZSzaaGxbv3L7&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 12", tip: "slika", url: "https://drive.google.com/thumbnail?id=1gct9lglN5sRpOMX2dcfBB717l8RmL-mi&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 13", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wq_CgiqmT4Zw7HgdjgIZUDHTWbMdVgBs&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 14", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WOMShIi6hTTYXuuGR8Oz0Wvxcwql5Ebq&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 15", tip: "slika", url: "https://drive.google.com/thumbnail?id=11jhWuG1s0IAdH2VgBymTxF-YKaO4XbcO&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 16", tip: "slika", url: "https://drive.google.com/thumbnail?id=1S5TpD0KnuALYxVYSj8CdX8rB27s2517a&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 17", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WCM_ixmavfjKreAsBio0-lHk3hcPTB8H&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 18", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wa-r8qpSpgq40Fzzn8zPeK4wyGhLxCDl&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 19", tip: "slika", url: "https://drive.google.com/thumbnail?id=1FSbJmeH4BoObkZPSx4QIcH6-xxmOnL2a&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 20", tip: "slika", url: "https://drive.google.com/thumbnail?id=1PEw7pvthBX7V6r3BKNmOmW9-EtZ2rYd1&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 21", tip: "slika", url: "https://drive.google.com/thumbnail?id=1TzUSwVtKmSRlaE9dukjT_VoIScuXJ-Lr&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 22", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wI49ckhmA-JZlELTf5UI56lP1b6_mvq8&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 23", tip: "slika", url: "https://drive.google.com/thumbnail?id=1XU-h8MsJ3dZ8wCW8-WzBU3rbb4p9uNzW&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 24", tip: "slika", url: "https://drive.google.com/thumbnail?id=1ArqvLdBPhv2XxNiqyxz1aE2cS57Kibi-&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 25", tip: "slika", url: "https://drive.google.com/thumbnail?id=1MBcqWdkz4xgInXATIMCaU1kvH-poV-Nj&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 26", tip: "slika", url: "https://drive.google.com/thumbnail?id=1CFG0lWqWE8HJ6pxMo5MO2skiNOo-wHwe&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 27", tip: "slika", url: "https://drive.google.com/thumbnail?id=1FVtOP58XWB9zgcnGO6weOhTcUbgZ7WaQ&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 28", tip: "slika", url: "https://drive.google.com/thumbnail?id=1xUB4o6J35qRvHk8nWwnxs4CsVuXyKWC9&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 29", tip: "slika", url: "https://drive.google.com/thumbnail?id=1KkOy6JQWsRsDfQWtgSAVr9tUU6551Ls-&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 30", tip: "slika", url: "https://drive.google.com/thumbnail?id=17zfRVijdXKMsRXaUnJ_tfiEgPu_x8hrG&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 31", tip: "slika", url: "https://drive.google.com/thumbnail?id=1fhooWW7xi_iJ_bIlejdhyqpVB9qVpSvh&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 32", tip: "slika", url: "https://drive.google.com/thumbnail?id=1T35-LcW-NDATjzvaCfIeLwxMWFtFi5MF&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 33", tip: "slika", url: "https://drive.google.com/thumbnail?id=1-_knEDvMHGfqqT6vZTteSdQcfrIyP4zG&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 34", tip: "slika", url: "https://drive.google.com/thumbnail?id=1eNTliOafTB_iHjxF3q5w2s2EsWwMp72E&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 35", tip: "slika", url: "https://drive.google.com/thumbnail?id=12Mfrkg72oMHCw7OjQPl9Ld4kIuDJvhov&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 36", tip: "slika", url: "https://drive.google.com/thumbnail?id=1-t13WWSY34o1JFzWVqxoJ-8e8o8QZK7q&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 37", tip: "slika", url: "https://drive.google.com/thumbnail?id=1VNccLFnVaI6j4qss6oTyVEGAYVrfTXLs&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 38", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WJEsFxNVr1x7ZWuw0Uff1ADwAae2fByc&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 39", tip: "slika", url: "https://drive.google.com/thumbnail?id=1yBxU2rEGC107EFph6sGBjN1kSyL-X6HA&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 40", tip: "slika", url: "https://drive.google.com/thumbnail?id=19F_fYYq1poAjv4lJm8sMgUs0nHK39LLz&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 41", tip: "slika", url: "https://drive.google.com/thumbnail?id=1M4H1J1Fl1XK9WlyU_YNanUlAzw7zPzYj&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 42", tip: "slika", url: "https://drive.google.com/thumbnail?id=1Q74BQzdDNBcJSDF8sYfgOhyQV47JgmE5&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 43", tip: "slika", url: "https://drive.google.com/thumbnail?id=1_F5YxVS3PbgkSyioZkq4Cj4DufWQUZgc&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 44", tip: "slika", url: "https://drive.google.com/thumbnail?id=1LWC0PJrf1q5N6Wcwb8ZpW1hF9_Q-19e4&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 45", tip: "slika", url: "https://drive.google.com/thumbnail?id=1mzCsQpyvcqUfISt3FusP6J6Mz7r6LauX&sz=w1000", datum: "NEPOZNATO" },
+            { ime: "Slika 46", tip: "slika", url: "https://drive.google.com/thumbnail?id=1dymQMQ7IweFVL-ie6xXpj-36NlAy6BvM&sz=w1000", datum: "NEPOZNATO" }
+        ]}
     ];
 
     const COMMUNITY_DATA = [
-        { naslovSekcije: "ZAPISI PRIPADNIKA (COMMUNITY)", fajlovi: [
-            { ime: "Primer Community Snimka", tip: "video", url: "https://drive.google.com/file/d/1OGUexzSH9Vx1yW8fom3L2n7n__cgcBmY/preview", datum: "17.02.2026" }
+        { naslovSekcije: "COMMUNITY VAULT", fajlovi: [
+            { ime: "Primer Snimka", tip: "video", url: "https://drive.google.com/file/d/1OGUexzSH9Vx1yW8fom3L2n7n__cgcBmY/preview", datum: "17.02.2026" }
         ]}
     ];
 
