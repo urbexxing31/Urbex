@@ -36,7 +36,7 @@
         #preview-content { width: 100%; height: 75vh; border: none; }
         .close-btn { position: absolute; top: -50px; right: 0; font-size: 50px; cursor: pointer; color: var(--green); }
         
-        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 50px; color: var(--green); cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; border: 1px solid var(--green); user-select: none; transition: 0.3s; }
+        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 50px; color: var(--green); cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; border: 1px solid var(--green); user-select: none; transition: 0.3s; z-index: 10; }
         .nav-arrow:hover { background: var(--green); color: #000; }
         .arrow-left { left: -70px; }
         .arrow-right { right: -70px; }
@@ -46,7 +46,12 @@
         .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; text-align: center; box-shadow: 0 0 20px var(--green); }
         input, textarea, select { background: #000; border: 1px solid var(--green); color: var(--green); padding: 12px; margin: 10px 0; outline: none; width: 100%; box-sizing: border-box; font-family: 'Courier New', monospace; }
         button { background: var(--green); border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; margin-top: 10px; }
-        .important-note { color: #ffcc00; font-size: 0.85em; border-left: 3px solid #ffcc00; padding-left: 10px; margin: 15px 0; text-align: left; }
+
+        /* SUBMIT DATA STYLING */
+        .submit-container { border: 1px solid var(--cyan); padding: 30px; background: rgba(0,10,20,0.9); max-width: 700px; margin: auto; box-shadow: 0 0 30px rgba(0, 242, 255, 0.1); }
+        .protocol-header { color: var(--cyan); font-weight: bold; font-size: 1.2em; border-bottom: 1px solid var(--cyan); padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
+        .important-note { color: #ffcc00; font-size: 0.9em; border: 1px solid #ffcc00; padding: 15px; margin: 20px 0; background: rgba(255, 204, 0, 0.05); border-left: 5px solid #ffcc00; }
+        .step-title { color: var(--green); font-size: 0.8em; text-transform: uppercase; margin-top: 15px; display: block; }
 
         @media (max-width: 1200px) { .nav-arrow { position: static; transform: none; display: inline-block; margin: 10px 20px; } .arrow-left, .arrow-right { left: auto; right: auto; } }
     </style>
@@ -82,10 +87,13 @@
     </nav>
 
     <div id="panel" class="section active">
-        <h1>SYSTEM READY</h1>
-        <div style="border: 1px dashed var(--green); padding: 20px;">
-            <p>> KORISNIK: OPERATOR | LOKALNO VREME: <span id="clock">00:00:00</span></p>
-            <p>> STATUS: <span style="color:var(--red)">AI_PROCESSED_FICTION</span></p>
+        <h1>SYSTEM STATUS</h1>
+        <div style="border: 1px dashed var(--green); padding: 25px; background: rgba(0,255,0,0.02);">
+            <p>> KORISNIK: <span style="color:#fff">OPERATOR_013</span></p>
+            <p>> LOKACIJA: <span style="color:#fff">PANČEVO / BEOGRAD</span></p>
+            <p>> VREME SISTEMA: <span id="clock" style="color:#fff">00:00:00</span></p>
+            <p>> DATA ENCRYPTION: <span style="color:var(--green)">ACTIVE (AES-256)</span></p>
+            <p>> STATUS SADRŽAJA: <span style="color:var(--red)">AI_PROCESSED_FICTION</span></p>
         </div>
     </div>
 
@@ -101,12 +109,28 @@
 
     <div id="submit" class="section">
         <h1 style="color: var(--cyan);">SUBMIT PROTOCOL</h1>
-        <div style="border: 1px solid var(--cyan); padding: 30px; max-width: 600px; margin: auto;">
+        <div class="submit-container">
             <form action="https://formspree.io/f/mreakjvd" method="POST">
-                <input type="text" name="ime" placeholder="OPERATER (IME)" required>
-                <input type="text" name="link" placeholder="GOOGLE DRIVE LINK" required>
-                <textarea name="napomena" placeholder="LOKACIJA / NAPOMENA"></textarea>
-                <button type="submit" style="background: var(--cyan); color: #000;">POŠALJI PODATKE</button>
+                <div class="protocol-header">[ EKSTERNA PRIJAVA PODATAKA ]</div>
+                
+                <span class="step-title">ID OPERATERA:</span>
+                <input type="text" name="ime" placeholder="Unesite vaš alias (npr. SilentWalker_013)" required>
+                
+                <span class="step-title">DATA LINK (GOOGLE DRIVE):</span>
+                <input type="text" name="link" placeholder="https://drive.google.com/file/d/..." required>
+                
+                <div class="important-note">
+                    <strong>⚠️ KRITIČNA INSTRUKCIJA ZA PRISTUP:</strong><br><br>
+                    Da bi arhiva mogla da indeksira vaš snimak, na Google Drive-u morate podesiti:<br>
+                    <strong>Share -> General Access -> "Anyone with the link"</strong><br>
+                    (Svi koji imaju vezu - Viewer status).<br><br>
+                    U suprotnom, sistem će automatski odbaciti vašu prijavu kao nečitljivu.
+                </div>
+                
+                <span class="step-title">DODATNI OPIS / LOKACIJA:</span>
+                <textarea name="napomena" rows="4" placeholder="Navedite detalje lokacije ili specifične napomene o snimljenom materijalu..."></textarea>
+                
+                <button type="submit" style="background: var(--cyan); color: #000; font-size: 1.1em; letter-spacing: 2px;">POŠALJI PODATKE NA VERIFIKACIJU</button>
             </form>
         </div>
     </div>
@@ -128,7 +152,7 @@
         <span class="close-btn" onclick="closePreview()">&times;</span>
         <div class="nav-arrow arrow-left" onclick="changeMedia(-1)">&#10094;</div>
         <div class="nav-arrow arrow-right" onclick="changeMedia(1)">&#10095;</div>
-        <h2 id="preview-title" style="color: var(--green);"></h2>
+        <h2 id="preview-title" style="color: var(--green); letter-spacing: 2px;"></h2>
         <div id="media-holder"></div>
     </div>
 </div>
@@ -261,7 +285,6 @@
     function load() { renderGrid(MOJA_ARHIVA, 'arhiva-kontener'); renderGrid(COMMUNITY_DATA, 'community-kontener'); }
     setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
     
-    // Background Animation
     const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d'); let pts = [];
     function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.onresize = init; init();
