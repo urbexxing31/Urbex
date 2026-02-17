@@ -2,64 +2,51 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <title>KONTROLA GRADA | Urbex Archive </title>
+    <title>KONTROLA GRADA | Urbex Archive</title>
     <style>
         :root { --green: #00ff41; --bg: #050505; --red: #ff0000; }
         body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; overflow-x: hidden; }
         
         /* SCANLINE EFEKAT */
         body::after {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
+            content: " "; display: block; position: fixed; inset: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
                         linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 9999;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
+            z-index: 9999; background-size: 100% 2px, 3px 100%; pointer-events: none;
         }
 
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; }
         
-        #warning-screen {
-            position: fixed; inset: 0; background: #000; z-index: 5000;
-            display: flex; justify-content: center; align-items: center; text-align: center;
-            color: var(--red); padding: 20px;
-        }
+        /* WARNING SCREEN */
+        #warning-screen { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; justify-content: center; align-items: center; text-align: center; color: var(--red); padding: 20px; }
         .warning-box { border: 2px solid var(--red); padding: 30px; max-width: 700px; background: rgba(30, 0, 0, 0.9); box-shadow: 0 0 20px var(--red); }
-        .warning-btn { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 15px 30px; 
-                       cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .warning-btn { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 15px 30px; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
         .warning-btn:hover { background: var(--red); color: #000; }
 
+        /* NAV */
         nav { border-bottom: 1px solid var(--green); padding: 15px; display: flex; gap: 20px; justify-content: center; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
         .btn { cursor: pointer; text-transform: uppercase; font-weight: bold; padding: 5px 10px; }
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; }
         .active { display: block; }
-        .sekcija-container { margin-bottom: 60px; }
-        .sekcija-naslov { color: var(--green); text-align: center; border-bottom: 2px solid var(--green); border-top: 2px solid var(--green); padding: 10px; margin: 30px 0; text-transform: uppercase; letter-spacing: 5px; background: rgba(0, 255, 65, 0.1); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
-        .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: scale(1.02); }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; pointer-events: none; }
-        
-        .video-thumb-container { position: relative; width: 100%; height: 180px; margin-bottom: 10px; border-bottom: 1px solid #222; }
-        .play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: var(--green); text-shadow: 0 0 15px #000; opacity: 0.8; }
-        
-        #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
-        .modal-box { position: relative; max-width: 1000px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; box-shadow: 0 0 30px rgba(0,255,65,0.2); }
-        #preview-content { width: 100%; height: 75vh; border: none; background: #000; }
-        .close-btn { position: absolute; top: -50px; right: 0; font-size: 50px; cursor: pointer; color: var(--green); }
-        
-        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 60px; color: var(--green); cursor: pointer; user-select: none; padding: 20px; transition: 0.3s; z-index: 2100; }
-        .nav-arrow:hover { text-shadow: 0 0 15px var(--green); scale: 1.2; }
-        .arrow-left { left: -80px; }
-        .arrow-right { right: -80px; }
 
+        /* GRID & CARDS */
+        .sekcija-naslov { color: var(--green); text-align: center; border: 2px solid var(--green); padding: 10px; margin: 30px 0; text-transform: uppercase; letter-spacing: 5px; background: rgba(0, 255, 65, 0.1); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; }
+        .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: scale(1.02); }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; }
+        
+        /* LOGIN */
         #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; justify-content: center; align-items: center; text-align: center; }
         .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
-        input { background: #000; border: 1px solid var(--green); color: var(--green); padding: 10px; text-align: center; margin: 10px; outline: none; width: 250px; font-size: 1.2em; }
+        input, textarea { background: #000; border: 1px solid var(--green); color: var(--green); padding: 10px; margin: 10px; outline: none; width: 280px; font-family: 'Courier New', monospace; }
         button { background: var(--green); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+
+        /* MODAL */
+        #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
+        .modal-box { position: relative; max-width: 1000px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; }
+        #preview-content { width: 100%; height: 70vh; border: none; }
+        .close-btn { position: absolute; top: -50px; right: 0; font-size: 50px; cursor: pointer; color: var(--green); }
     </style>
 </head>
 <body>
@@ -71,9 +58,9 @@
         <h1 style="letter-spacing: 5px;">⚠️ PRISTUP OGRANIČEN ⚠️</h1>
         <p style="text-align: left; font-size: 0.85em; line-height: 1.6;">
             [!] DIGITALNA SIMULACIJA: Sadržaj je produkt kreativne montaže i AI obrade.<br>
-            [!] AUDIO/VIZUELNI REKVIZITI: Svi prikazi oštećenja imovine su urađeni korišćenjem SFX efekata i scenografskih rekvizita (props).<br>
-            [!] FIKCIJA: Učesnici su glumci. Lokacije su korišćene isključivo kao filmski set pod kontrolisanim uslovima.<br>
-            [!] ODRICANJE: Autor sajta ne podržava niti promoviše kršenje zakona ili neovlašćeni ulazak na tuđi posed.
+            [!] AUDIO/VIZUELNI REKVIZITI: Svi prikazi su urađeni korišćenjem SFX efekata.<br>
+            [!] FIKCIJA: Učesnici su glumci. Lokacije su filmski setovi.<br>
+            [!] ODRICANJE: Autor ne promoviše kršenje zakona.
         </p>
         <button class="warning-btn" onclick="acceptWarning()">POTVRĐUJEM DA JE SADRŽAJ FIKCIONALAN</button>
     </div>
@@ -83,9 +70,11 @@
     <div class="box">
         <h1 style="letter-spacing: 10px;">KONTROLA GRADA</h1>
         <p>> PRISTUP URBEX SISTEMU <</p>
-        <input type="password" id="pass" placeholder="PASSWORD_REQUIRED">
-        <br>
+        <input type="password" id="pass" placeholder="PASSWORD_REQUIRED"><br>
         <button onclick="check()">OTKLJUČAJ</button>
+        <p style="font-size: 0.8em; margin-top: 20px; color: var(--green); opacity: 0.7;">
+            Zapratite @p_mihajlo1 na Instagramu za pristup grupi
+        </p>
     </div>
 </div>
 
@@ -93,6 +82,8 @@
     <nav>
         <div class="btn" onclick="show('panel')">Status Panel</div>
         <div class="btn" onclick="show('arhiva')">Arhiva Media</div>
+        <div class="btn" onclick="show('submit')">Submit Data</div>
+        <div id="admin-btn" class="btn" onclick="show('admin')" style="display:none; color: yellow;">Master Control</div>
         <div class="btn" onclick="location.reload()" style="color:red">Log Out</div>
     </nav>
 
@@ -100,47 +91,61 @@
         <h1>SYSTEM READY</h1>
         <div style="border: 1px dashed var(--green); padding: 20px;">
             <p style="color: yellow;">[!] SECURITY ALERT: Encrypted connection active.</p>
-            <p>> KORISNIK: <span id="user-status">OPERATOR_VRŠAC</span></p>
+            <p>> KORISNIK: <span style="color:white">OPERATOR</span></p>
             <p>> LOKALNO VREME: <span id="clock" style="color:white">00:00:00</span></p>
-            <p>> NAPOMENA: Svi snimci su digitalno osvetljeni i audio je filtriran.</p>
-            <p>> INSTAGRAM: Zapratite <span style="color:white">p_mihajlo1</span> za pristup grupi.</p>
-            <p>> LOKACIJA FAJLOVA: D:\URBEX\VRŠAC_DATA</p>
+            <p>> LOKACIJA FAJLOVA: D:\URBEX\DATA_</p>
             <p>> STATUS: <span style="color:var(--red)">AI_PROCESSED_FICTION</span></p>
         </div>
     </div>
 
     <div id="arhiva" class="section">
-        <h1>ARHIVA SNIMAKA (MEDIA)</h1>
+        <h1>ARHIVA SNIMAKA</h1>
         <div id="arhiva-kontener"></div>
+    </div>
+
+    <div id="submit" class="section">
+        <h1>SUBMIT NEW DATA</h1>
+        <div style="border: 1px solid var(--green); padding: 20px; background: rgba(0,20,0,0.5);">
+            <p>> Unesite link do vašeg Google Drive videa ili slika:</p>
+            <input type="text" id="sub-url" placeholder="URL_LINK_OVDE" style="width: 90%;"><br>
+            <p>> Napomena (Lokacija/Datum):</p>
+            <textarea id="sub-note" placeholder="Opis..." style="width: 90%; height: 60px;"></textarea><br>
+            <button onclick="alert('DATA SENT TO QUEUE. AWAITING OPERATOR APPROVAL.')">UPLOAD TO QUEUE</button>
+        </div>
+    </div>
+
+    <div id="admin" class="section">
+        <h1 style="color: yellow;">MASTER CONTROL PANEL</h1>
+        <div style="border: 1px solid yellow; padding: 20px;">
+            <p>> GENERATOR KODA ZA ARHIVU:</p>
+            <input type="text" id="adm-name" placeholder="Ime Videa"><br>
+            <input type="text" id="adm-url" placeholder="Google Drive Preview Link"><br>
+            <button onclick="genCode()">GENERIŠI KOD</button>
+            <pre id="code-output" style="color: white; background: #222; padding: 10px; margin-top: 10px; white-space: pre-wrap; font-size: 0.7em;"></pre>
+        </div>
     </div>
 </div>
 
 <div id="preview">
     <div class="modal-box">
-        <span class="nav-arrow arrow-left" onclick="prevM()">&#10094;</span>
-        <span class="nav-arrow arrow-right" onclick="nextM()">&#10095;</span>
         <span class="close-btn" onclick="closePreview()">&times;</span>
-        <h2 id="preview-title" style="margin-bottom: 15px; color: var(--green); letter-spacing: 2px;"></h2>
+        <h2 id="preview-title" style="color: var(--green); letter-spacing: 2px;"></h2>
         <div id="media-holder"></div>
     </div>
 </div>
 
 <script>
-    // BEZBEDNOST: Onemogući desni klik i prečice za inspect
-    document.addEventListener('contextmenu', event => event.preventDefault());
-    document.onkeydown = function(e) {
-        if(e.keyCode == 123) return false;
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
-        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
-    }
+    const USER_PASS = "29012026kontrola";
+    const ADMIN_PASS = "admin013master"; // Tvoja tajna šifra
+    
+    // BEZBEDNOST
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.onkeydown = e => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) return false; };
 
-    // SAT U PANELU
+    // SAT
     setInterval(() => {
         const now = new Date();
-        document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + 
-                                                   now.getMinutes().toString().padStart(2, '0') + ":" + 
-                                                   now.getSeconds().toString().padStart(2, '0');
+        document.getElementById('clock').innerText = now.toLocaleTimeString();
     }, 1000);
 
     function acceptWarning() {
@@ -148,6 +153,22 @@
         document.getElementById('login').style.display = 'flex';
     }
 
+    function check() {
+        const p = document.getElementById('pass').value;
+        if(p === USER_PASS || p === ADMIN_PASS) {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('main').style.display = 'block';
+            if(p === ADMIN_PASS) document.getElementById('admin-btn').style.display = 'inline-block';
+            load();
+        } else { alert("ACCESS DENIED"); }
+    }
+
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    // OVDE SU TVOJI PODACI - NE DIRAJ STRUKTURU
     const MOJA_ARHIVA = [
         {
             naslovSekcije: "-VIDEI- SEKCIJA 1 - ŠTAMPARIJA",
@@ -245,108 +266,56 @@
         }
     ];
 
-    const SIFRA = "29012026kontrola";
-    let curS = 0; let curF = 0;
-
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let pts = [];
-    function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    class Pt {
-        constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; }
-        upd() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>canvas.width)this.vx*=-1; if(this.y<0||this.y>canvas.height)this.vy*=-1; }
-    }
-    function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle = '#004d1a';
-        pts.forEach(p => {
-            p.upd();
-            pts.forEach(p2 => {
-                let d = Math.hypot(p.x-p2.x, p.y-p2.y);
-                if(d<150) { ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p2.x,p2.y); ctx.stroke(); }
-            });
-        });
-        requestAnimationFrame(draw);
-    }
-    init(); for(let i=0;i<80;i++) pts.push(new Pt()); draw();
-    window.addEventListener('resize', init);
-
-    function check() { 
-        if(document.getElementById('pass').value === SIFRA) { 
-            document.getElementById('login').style.display='none'; 
-            document.getElementById('main').style.display='block'; 
-            load(); 
-        } else { alert("ACCESS DENIED"); } 
-    }
-    function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-    
     function load() {
-        const cont = document.getElementById('arhiva-kontener'); 
-        cont.innerHTML = "";
+        const cont = document.getElementById('arhiva-kontener'); cont.innerHTML = "";
         MOJA_ARHIVA.forEach((s, si) => {
-            let html = `<div class="sekcija-container"><div class="sekcija-naslov">${s.naslovSekcije}</div><div class="grid" id="g-${si}"></div></div>`;
-            cont.innerHTML += html;
-            
+            cont.innerHTML += `<div class="sekcija-naslov">${s.naslovSekcije}</div><div class="grid" id="g-${si}"></div>`;
             s.fajlovi.forEach((f, fi) => {
-                let mediaHtml = "";
-                if(f.tip === 'video') {
-                    let vId = f.url.includes('/d/') ? f.url.split('/d/')[1].split('/')[0] : "";
-                    if(vId && vId !== "PASTE_ID_OVDE") {
-                        let thumb = `https://drive.google.com/thumbnail?id=${vId}&sz=w1000`;
-                        mediaHtml = `
-                            <div class="video-thumb-container">
-                                <img src="${thumb}" style="filter: brightness(0.6);">
-                                <div class="play-overlay">▶</div>
-                            </div>`;
-                    } else {
-                        mediaHtml = `<div style="background:#111; height:180px; display:flex; align-items:center; justify-content:center; color:var(--green)">[ ČEKA SE ID ]</div>`;
-                    }
-                } else {
-                    mediaHtml = `<img src="${f.url}">`;
-                }
-
+                let thumb = f.tip === 'video' ? `https://drive.google.com/thumbnail?id=${f.url.split('/d/')[1].split('/')[0]}&sz=w1000` : f.url;
                 document.getElementById(`g-${si}`).innerHTML += `
                     <div class="card" onclick="openF(${si},${fi})">
-                        <span style="font-size: 0.8em; opacity: 0.7;">${f.datum}</span>
-                        ${mediaHtml}
-                        <h3 style="text-shadow: 2px 2px 4px #000;">${f.ime}</h3>
+                        <span style="font-size:0.7em">${f.datum}</span>
+                        <img src="${thumb}">
+                        <h3>${f.ime}</h3>
                     </div>`;
             });
         });
     }
 
     function openF(si, fi) {
-        curS = si; curF = fi;
         const f = MOJA_ARHIVA[si].fajlovi[fi];
         document.getElementById('preview-title').innerText = f.ime;
-        const holder = document.getElementById('media-holder');
-        if(f.tip === 'video') {
-            holder.innerHTML = `<iframe id="preview-content" src="${f.url}" allow="autoplay"></iframe>`;
-        } else {
-            holder.innerHTML = `<img id="preview-content" src="${f.url}" style="object-fit: contain;">`;
-        }
+        document.getElementById('media-holder').innerHTML = f.tip==='video' ? `<iframe id="preview-content" src="${f.url}"></iframe>` : `<img id="preview-content" src="${f.url}" style="object-fit:contain">`;
         document.getElementById('preview').style.display = 'block';
     }
 
-    function nextM() {
-        curF = (curF + 1) % MOJA_ARHIVA[curS].fajlovi.length;
-        openF(curS, curF);
-    }
-    function prevM() {
-        curF = (curF - 1 + MOJA_ARHIVA[curS].fajlovi.length) % MOJA_ARHIVA[curS].fajlovi.length;
-        openF(curS, curF);
-    }
-    function closePreview() {
-        document.getElementById('media-holder').innerHTML = "";
-        document.getElementById('preview').style.display = 'none';
+    function closePreview() { document.getElementById('preview').style.display = 'none'; }
+
+    // ADMIN GENERATOR
+    function genCode() {
+        const n = document.getElementById('adm-name').value;
+        const u = document.getElementById('adm-url').value;
+        const code = `{ ime: "${n}", tip: "video", url: "${u}", datum: "${new Date().toLocaleDateString()}" },`;
+        document.getElementById('code-output').innerText = code;
     }
 
-    window.addEventListener('keydown', (e) => {
-        if(document.getElementById('preview').style.display === 'block') {
-            if(e.key === "ArrowRight") nextM();
-            if(e.key === "ArrowLeft") prevM();
-            if(e.key === "Escape") closePreview();
-        }
-    });
+    // CANVAS ANIMACIJA
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let pts = [];
+    function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = init; init();
+    for(let i=0; i<60; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5), vy:(Math.random()-0.5)});
+    function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle="#004d1a";
+        pts.forEach(p => {
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
+            pts.forEach(p2 => { if(Math.hypot(p.x-p2.x, p.y-p2.y)<100){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();} });
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
 </script>
 </body>
 </html>
