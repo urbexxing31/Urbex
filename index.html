@@ -4,9 +4,21 @@
     <meta charset="UTF-8">
     <title>KONTROLA GRADA| Urbex Archive </title>
     <style>
-        :root { --green: #00ff41; --bg: #050505; }
+        :root { --green: #00ff41; --bg: #050505; --red: #ff0000; }
         body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; overflow-x: hidden; }
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
+        
+        /* NOVI WARNING SCREEN STIL */
+        #warning-screen {
+            position: fixed; inset: 0; background: #000; z-index: 5000;
+            display: flex; justify-content: center; align-items: center; text-align: center;
+            color: var(--red); padding: 20px;
+        }
+        .warning-box { border: 2px solid var(--red); padding: 30px; max-width: 700px; background: rgba(30, 0, 0, 0.9); box-shadow: 0 0 20px var(--red); }
+        .warning-btn { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 15px 30px; 
+                       cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .warning-btn:hover { background: var(--red); color: #000; }
+
         nav { border-bottom: 1px solid var(--green); padding: 15px; display: flex; gap: 20px; justify-content: center; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
         .btn { cursor: pointer; text-transform: uppercase; font-weight: bold; padding: 5px 10px; }
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; }
@@ -18,7 +30,6 @@
         .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: scale(1.02); }
         .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; pointer-events: none; }
         
-        /* Stil za video thumbnail i play ikonicu */
         .video-thumb-container { position: relative; width: 100%; height: 180px; margin-bottom: 10px; border-bottom: 1px solid #222; }
         .play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: var(--green); text-shadow: 0 0 15px #000; opacity: 0.8; }
         
@@ -36,7 +47,7 @@
             .nav-arrow { position: static; transform: none; display: inline-block; margin: 10px 40px; }
         }
         
-        #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; text-align: center; }
+        #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; justify-content: center; align-items: center; text-align: center; }
         .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
         input { background: #000; border: 1px solid var(--green); color: var(--green); padding: 10px; text-align: center; margin: 10px; outline: none; width: 250px; font-size: 1.2em; }
         button { background: var(--green); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
@@ -45,6 +56,19 @@
 <body>
 
 <canvas id="bg-canvas"></canvas>
+
+<div id="warning-screen">
+    <div class="warning-box">
+        <h1 style="letter-spacing: 5px;">⚠️ PRISTUP OGRANIČEN ⚠️</h1>
+        <p style="text-align: left; font-size: 0.85em; line-height: 1.6;">
+            [!] DIGITALNA SIMULACIJA: Sadržaj je produkt kreativne montaže i AI obrade.<br>
+            [!] AUDIO/VIZUELNI REKVIZITI: Svi prikazi oštećenja imovine su urađeni korišćenjem SFX efekata i scenografskih rekvizita (props).<br>
+            [!] FIKCIJA: Učesnici su glumci. Lokacije su korišćene isključivo kao filmski set pod kontrolisanim uslovima.<br>
+            [!] ODRICANJE: Autor sajta ne podržava niti promoviše kršenje zakona ili neovlašćeni ulazak na tuđi posed.
+        </p>
+        <button class="warning-btn" onclick="acceptWarning()">POTVRĐUJEM DA JE SADRŽAJ FIKCIONALAN</button>
+    </div>
+</div>
 
 <div id="login">
     <div class="box">
@@ -66,9 +90,11 @@
     <div id="panel" class="section active">
         <h1>SYSTEM READY</h1>
         <div style="border: 1px dashed var(--green); padding: 20px;">
+            <p style="color: yellow;">[!] SECURITY ALERT: Encrypted connection active.</p>
             <p>> NAPOMENA: Svi snimci su digitalno osvetljeni i audio je filtriran radi bolje preglednosti.</p>
-            <p>> KAKO UCI: Mozete uci u nasu Instagram grupu,follow p_mihajlo1 i posaljite messege!</p>
+            <p>> KAKO UCI: Mozete uci u nasu Instagram grupu, follow p_mihajlo1 i posaljite messege!</p>
             <p>> LOKACIJA FAJLOVA: D:\URBEX</p>
+            <p>> STATUS: <span style="color:var(--red)">AI_PROCESSED_FICTION</span></p>
         </div>
     </div>
 
@@ -89,6 +115,12 @@
 </div>
 
 <script>
+    // FUNKCIJA ZA ULAZ (NOVO)
+    function acceptWarning() {
+        document.getElementById('warning-screen').style.display = 'none';
+        document.getElementById('login').style.display = 'flex';
+    }
+
     const MOJA_ARHIVA = [
         {
             naslovSekcije: "-VIDEI- SEKCIJA 1 - ŠTAMPARIJA",
@@ -189,7 +221,6 @@
     const SIFRA = "29012026kontrola";
     let curS = 0; let curF = 0;
 
-    // MATRIX BG
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
@@ -212,7 +243,6 @@
     init(); for(let i=0;i<80;i++) pts.push(new Pt()); draw();
     window.addEventListener('resize', init);
 
-    // SISTEM
     function check() { 
         if(document.getElementById('pass').value === SIFRA) { 
             document.getElementById('login').style.display='none'; 
@@ -222,7 +252,6 @@
     }
     function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
     
-    // MODIFIKOVANA LOAD FUNKCIJA ZA AUTOMATSKI COVER VIDEA
     function load() {
         const cont = document.getElementById('arhiva-kontener'); 
         cont.innerHTML = "";
@@ -232,9 +261,7 @@
             
             s.fajlovi.forEach((f, fi) => {
                 let mediaHtml = "";
-                
                 if(f.tip === 'video') {
-                    // Ako je video, pokušaj da izvučeš ID i napraviš thumbnail pozadinu
                     let vId = f.url.includes('/d/') ? f.url.split('/d/')[1].split('/')[0] : "";
                     if(vId && vId !== "PASTE_ID_OVDE") {
                         let thumb = `https://drive.google.com/thumbnail?id=${vId}&sz=w1000`;
@@ -244,11 +271,9 @@
                                 <div class="play-overlay">▶</div>
                             </div>`;
                     } else {
-                        // Ako ID još nije ubačen, ostaje siva pozadina
                         mediaHtml = `<div style="background:#111; height:180px; display:flex; align-items:center; justify-content:center; color:var(--green)">[ ČEKA SE ID ]</div>`;
                     }
                 } else {
-                    // Za slike ostaje sve isto kao pre
                     mediaHtml = `<img src="${f.url}">`;
                 }
 
@@ -267,7 +292,6 @@
         const f = MOJA_ARHIVA[si].fajlovi[fi];
         document.getElementById('preview-title').innerText = f.ime;
         const holder = document.getElementById('media-holder');
-        
         if(f.tip === 'video') {
             holder.innerHTML = `<iframe id="preview-content" src="${f.url}" allow="autoplay"></iframe>`;
         } else {
@@ -280,12 +304,10 @@
         curF = (curF + 1) % MOJA_ARHIVA[curS].fajlovi.length;
         openF(curS, curF);
     }
-
     function prevM() {
         curF = (curF - 1 + MOJA_ARHIVA[curS].fajlovi.length) % MOJA_ARHIVA[curS].fajlovi.length;
         openF(curS, curF);
     }
-
     function closePreview() {
         document.getElementById('media-holder').innerHTML = "";
         document.getElementById('preview').style.display = 'none';
@@ -301,11 +323,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
