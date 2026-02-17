@@ -6,51 +6,31 @@
     <style>
         :root { --green: #00ff41; --bg: #050505; --red: #ff0000; --cyan: #00f2ff; }
         body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; overflow-x: hidden; }
-        
-        /* SCANLINE EFEKAT */
-        body::after {
-            content: " "; display: block; position: fixed; inset: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 9999; background-size: 100% 2px, 3px 100%; pointer-events: none;
-        }
-
+        body::after { content: " "; display: block; position: fixed; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 9999; background-size: 100% 2px, 3px 100%; pointer-events: none; }
         #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; }
-        
-        /* WARNING SCREEN */
         #warning-screen { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; justify-content: center; align-items: center; text-align: center; color: var(--red); padding: 20px; }
         .warning-box { border: 2px solid var(--red); padding: 30px; max-width: 700px; background: rgba(30, 0, 0, 0.9); box-shadow: 0 0 20px var(--red); }
         .warning-btn { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 15px 30px; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
         .warning-btn:hover { background: var(--red); color: #000; }
-
-        /* NAV */
         nav { border-bottom: 1px solid var(--green); padding: 15px; display: flex; gap: 15px; justify-content: center; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
         .btn { cursor: pointer; text-transform: uppercase; font-weight: bold; padding: 5px 10px; border: 1px solid transparent; transition: 0.3s; font-size: 0.9em; }
         .btn:hover { border-color: var(--green); background: rgba(0,255,65,0.1); }
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; }
         .active { display: block; }
-
-        /* GRID & CARDS */
         .sekcija-naslov { color: var(--green); text-align: center; border: 2px solid var(--green); padding: 10px; margin: 30px 0; text-transform: uppercase; letter-spacing: 5px; background: rgba(0, 255, 65, 0.1); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
         .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: translateY(-5px); }
         .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; }
-        
-        /* LOGIN */
         #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; justify-content: center; align-items: center; text-align: center; }
         .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
         input, textarea, select { background: #000; border: 1px solid var(--green); color: var(--green); padding: 12px; margin: 10px 0; outline: none; width: 100%; font-family: 'Courier New', monospace; box-sizing: border-box; }
         button { background: var(--green); border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; margin-top: 10px; }
-        button:hover { background: #00cc33; }
-
-        /* MODAL */
         #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
         .modal-box { position: relative; max-width: 1000px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; }
         #preview-content { width: 100%; height: 70vh; border: none; }
         .close-btn { position: absolute; top: -50px; right: 0; font-size: 50px; cursor: pointer; color: var(--green); }
-
-        .important-note { color: #ffcc00; font-size: 0.85em; border-left: 3px solid #ffcc00; padding-left: 10px; margin: 15px 0; }
+        .important-note { color: #ffcc00; font-size: 0.85em; border-left: 3px solid #ffcc00; padding-left: 10px; margin: 15px 0; text-align: left; }
     </style>
 </head>
 <body>
@@ -110,30 +90,30 @@
 
     <div id="community" class="section">
         <h1>COMMUNITY VAULT</h1>
-        <p style="text-align: center; opacity: 0.7;">> Materijal prikupljen od strane eksternih operatera <</p>
         <div id="community-kontener"></div>
     </div>
 
     <div id="submit" class="section">
         <h1 style="color: var(--cyan);">SUBMIT PROTOCOL</h1>
         <div style="border: 1px solid var(--cyan); padding: 30px; background: rgba(0,10,20,0.8); max-width: 600px; margin: auto;">
-            <p style="color: var(--cyan); font-weight: bold;">[ PROTOKOL ZA SLANJE PODATAKA ]</p>
-            
-            <label>OPERATER (IME):</label>
-            <input type="text" id="sub-name" placeholder="Vaš alias/ime">
+            <form action="https://formspree.io/f/mreakjvd" method="POST">
+                <p style="color: var(--cyan); font-weight: bold;">[ PROTOKOL ZA SLANJE PODATAKA ]</p>
+                
+                <label>OPERATER (IME):</label>
+                <input type="text" name="ime" placeholder="Vaš alias/ime" required>
 
-            <label>SOURCE LINK (GOOGLE DRIVE):</label>
-            <input type="text" id="sub-url" placeholder="https://drive.google.com/...">
+                <label>LINK ZA SLIKU/VIDEO (GOOGLE DRIVE):</label>
+                <input type="text" name="link" placeholder="https://drive.google.com/..." required>
 
-            <div class="important-note">
-                <b>OBAVEZNO:</b> Fajl na Google Drive-u mora biti podešen na <b>"Anyone with the link"</b> (Editor ili Viewer), u suprotnom sistem ne može procesuirati podatke.
-            </div>
+                <div class="important-note">
+                    <b>OBAVEZNO:</b> Morate staviti sliku ili video u Google Drive i u "Share" opcijama podesiti na <b>"Everyone who has link"</b> (Public).
+                </div>
 
-            <label>NAPOMENA / LOKACIJA:</label>
-            <textarea id="sub-note" placeholder="Opis lokacije ili dodatne informacije..."></textarea>
+                <label>NAPOMENA / LOKACIJA:</label>
+                <textarea name="napomena" placeholder="Unesite detalje lokacije ili poruku operateru..."></textarea>
 
-            <button style="background: var(--cyan); color: #000;" onclick="sendToOperator()">POŠALJI NA PROVERU</button>
-            <p id="status-msg" style="font-size: 0.8em; margin-top: 15px; display: none; color: #00ff00;">> DATA ENCRYPTED AND SENT TO OPERATOR QUEUE.</p>
+                <button type="submit" style="background: var(--cyan); color: #000;">POŠALJI NA PROVERU</button>
+            </form>
         </div>
     </div>
 
@@ -142,49 +122,23 @@
         <div style="border: 1px solid #ffcc00; padding: 20px; background: rgba(20,20,0,0.3);">
             <p>> GENERATOR KODA ZA ARHIVU:</p>
             <input type="text" id="adm-name" placeholder="Ime Videa/Slike">
-            <input type="text" id="adm-url" placeholder="Google Drive Link (Thumbnail/Preview)">
-            <select id="adm-type">
-                <option value="video">VIDEO</option>
-                <option value="slika">SLIKA</option>
-            </select>
-            <select id="adm-dest">
-                <option value="official">OFFICIAL ARCHIVE</option>
-                <option value="community">COMMUNITY VAULT</option>
-            </select>
+            <input type="text" id="adm-url" placeholder="Google Drive Preview Link">
+            <select id="adm-type"><option value="video">VIDEO</option><option value="slika">SLIKA</option></select>
             <button style="background: #ffcc00; color: #000;" onclick="genCode()">GENERIŠI KOD ZA GITHUB</button>
-            
-            <p style="margin-top: 20px; font-size: 0.8em;">Kopiraj kod ispod i nalepi ga u odgovarajuću sekciju u index.html:</p>
-            <pre id="code-output" style="color: white; background: #111; padding: 15px; border: 1px solid #333; white-space: pre-wrap; font-size: 0.75em;"></pre>
+            <pre id="code-output" style="color: white; background: #111; padding: 15px; border: 1px solid #333; white-space: pre-wrap; font-size: 0.75em; margin-top:10px;"></pre>
         </div>
     </div>
 </div>
 
-<div id="preview">
-    <div class="modal-box">
-        <span class="close-btn" onclick="closePreview()">&times;</span>
-        <h2 id="preview-title" style="color: var(--green); letter-spacing: 2px;"></h2>
-        <div id="media-holder"></div>
-    </div>
-</div>
+<div id="preview"><div class="modal-box"><span class="close-btn" onclick="closePreview()">&times;</span><h2 id="preview-title" style="color: var(--green); letter-spacing: 2px;"></h2><div id="media-holder"></div></div></div>
 
 <script>
     const USER_PASS = "29012026kontrola";
     const ADMIN_PASS = "admin013master"; 
-    
-    // BEZBEDNOST
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.onkeydown = e => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) return false; };
-
-    // SAT
-    setInterval(() => {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-    }, 1000);
-
-    function acceptWarning() {
-        document.getElementById('warning-screen').style.display = 'none';
-        document.getElementById('login').style.display = 'flex';
-    }
-
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    function acceptWarning() { document.getElementById('warning-screen').style.display = 'none'; document.getElementById('login').style.display = 'flex'; }
     function check() {
         const p = document.getElementById('pass').value;
         if(p === USER_PASS || p === ADMIN_PASS) {
@@ -192,39 +146,21 @@
             document.getElementById('main').style.display = 'block';
             if(p === ADMIN_PASS) document.getElementById('admin-btn').style.display = 'inline-block';
             load();
-        } else { alert("ACCESS DENIED: INVALID CREDENTIALS"); }
+        } else { alert("ACCESS DENIED"); }
     }
+    function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
-    function show(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    function sendToOperator() {
-        document.getElementById('status-msg').style.display = 'block';
-        setTimeout(() => { alert("Podaci su poslati. Operater će pregledati snimak."); }, 500);
-    }
-
-    // --- PODACI ---
-    // Ovde dodaješ svoje videe
+    // --- PODACI (OVDE SAMO DODAJ NOVE REDOVE KOJE TI ADMIN PANEL GENERIŠE) ---
     const MOJA_ARHIVA = [
-        {
-            naslovSekcije: "SEKCIJA 1 - ŠTAMPARIJA",
-            fajlovi: [
-                { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1p--S8zpIhUN_Mt6heh2Dh7jmY3G54Ukr/preview", datum: "13.12.2025" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1wi7Gom8qGIW-yx2maO_oheGGnjADR3iy/preview", datum: "13.12.2025" }
-            ]
-        }
+        { naslovSekcije: "SEKCIJA 1 - OFICIJALNI ZAPISI", fajlovi: [
+            { ime: "Štamparija Video 1", tip: "video", url: "https://drive.google.com/file/d/1p--S8zpIhUN_Mt6heh2Dh7jmY3G54Ukr/preview", datum: "13.12.2025" }
+        ]}
     ];
 
-    // OVDE DODAJEŠ VIDEA KOJE TI DRUGI POŠALJU
     const COMMUNITY_DATA = [
-        {
-            naslovSekcije: "OPERATERI: EKSTERNI IZVORI",
-            fajlovi: [
-                { ime: "Primer Community Snimka", tip: "video", url: "https://drive.google.com/file/d/1OGUexzSH9Vx1yW8fom3L2n7n__cgcBmY/preview", datum: "17.02.2026" }
-            ]
-        }
+        { naslovSekcije: "ZAPISI PRIPADNIKA (COMMUNITY)", fajlovi: [
+            { ime: "Primer Snimka", tip: "video", url: "https://drive.google.com/file/d/1OGUexzSH9Vx1yW8fom3L2n7n__cgcBmY/preview", datum: "17.02.2026" }
+        ]}
     ];
 
     function renderGrid(data, containerId) {
@@ -233,22 +169,13 @@
         data.forEach((s, si) => {
             cont.innerHTML += `<div class="sekcija-naslov">${s.naslovSekcije}</div><div class="grid" id="${containerId}-${si}"></div>`;
             s.fajlovi.forEach((f, fi) => {
+                if(!f.url) return;
                 let thumb = f.tip === 'video' ? `https://drive.google.com/thumbnail?id=${f.url.split('/d/')[1].split('/')[0]}&sz=w1000` : f.url;
-                document.getElementById(`${containerId}-${si}`).innerHTML += `
-                    <div class="card" onclick="openF('${containerId}',${si},${fi})">
-                        <span style="font-size:0.7em; opacity:0.6;">${f.datum}</span>
-                        <img src="${thumb}">
-                        <h3>${f.ime}</h3>
-                    </div>`;
+                document.getElementById(`${containerId}-${si}`).innerHTML += `<div class="card" onclick="openF('${containerId}',${si},${fi})"><span style="font-size:0.7em; opacity:0.6;">${f.datum}</span><img src="${thumb}"><h3>${f.ime}</h3></div>`;
             });
         });
     }
-
-    function load() {
-        renderGrid(MOJA_ARHIVA, 'arhiva-kontener');
-        renderGrid(COMMUNITY_DATA, 'community-kontener');
-    }
-
+    function load() { renderGrid(MOJA_ARHIVA, 'arhiva-kontener'); renderGrid(COMMUNITY_DATA, 'community-kontener'); }
     function openF(source, si, fi) {
         const data = source === 'arhiva-kontener' ? MOJA_ARHIVA : COMMUNITY_DATA;
         const f = data[si].fajlovi[fi];
@@ -256,31 +183,20 @@
         document.getElementById('media-holder').innerHTML = f.tip==='video' ? `<iframe id="preview-content" src="${f.url}"></iframe>` : `<img id="preview-content" src="${f.url}" style="object-fit:contain">`;
         document.getElementById('preview').style.display = 'block';
     }
-
     function closePreview() { document.getElementById('preview').style.display = 'none'; }
-
     function genCode() {
         const n = document.getElementById('adm-name').value;
         const u = document.getElementById('adm-url').value;
         const t = document.getElementById('adm-type').value;
-        const code = `{ ime: "${n}", tip: "${t}", url: "${u}", datum: "${new Date().toLocaleDateString()}" },`;
-        document.getElementById('code-output').innerText = code;
+        document.getElementById('code-output').innerText = `{ ime: "${n}", tip: "${t}", url: "${u}", datum: "${new Date().toLocaleDateString()}" },`;
     }
-
-    // CANVAS ANIMACIJA (Ista kao pre)
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let pts = [];
+    const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d'); let pts = [];
     function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.onresize = init; init();
     for(let i=0; i<60; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5), vy:(Math.random()-0.5)});
     function draw() {
         ctx.clearRect(0,0,canvas.width,canvas.height); ctx.strokeStyle="#004d1a";
-        pts.forEach(p => {
-            p.x+=p.vx; p.y+=p.vy;
-            if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
-            pts.forEach(p2 => { if(Math.hypot(p.x-p2.x, p.y-p2.y)<100){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();} });
-        });
+        pts.forEach(p => { p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1; pts.forEach(p2 => { if(Math.hypot(p.x-p2.x, p.y-p2.y)<100){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();} }); });
         requestAnimationFrame(draw);
     }
     draw();
