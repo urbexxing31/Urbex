@@ -14,9 +14,13 @@
         .sekcija-container { margin-bottom: 60px; }
         .sekcija-naslov { color: var(--green); text-align: center; border-bottom: 2px solid var(--green); border-top: 2px solid var(--green); padding: 10px; margin: 30px 0; text-transform: uppercase; letter-spacing: 5px; background: rgba(0, 255, 65, 0.1); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; }
+        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
         .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: scale(1.02); }
-        .card img, .card video { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; pointer-events: none; }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; pointer-events: none; }
+        
+        /* Stil za video thumbnail i play ikonicu */
+        .video-thumb-container { position: relative; width: 100%; height: 180px; margin-bottom: 10px; border-bottom: 1px solid #222; }
+        .play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: var(--green); text-shadow: 0 0 15px #000; opacity: 0.8; }
         
         #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
         .modal-box { position: relative; max-width: 1000px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; box-shadow: 0 0 30px rgba(0,255,65,0.2); }
@@ -218,13 +222,42 @@
     }
     function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
     
+    // MODIFIKOVANA LOAD FUNKCIJA ZA AUTOMATSKI COVER VIDEA
     function load() {
-        const cont = document.getElementById('arhiva-kontener'); cont.innerHTML = "";
+        const cont = document.getElementById('arhiva-kontener'); 
+        cont.innerHTML = "";
         MOJA_ARHIVA.forEach((s, si) => {
             let html = `<div class="sekcija-container"><div class="sekcija-naslov">${s.naslovSekcije}</div><div class="grid" id="g-${si}"></div></div>`;
             cont.innerHTML += html;
+            
             s.fajlovi.forEach((f, fi) => {
-                document.getElementById(`g-${si}`).innerHTML += `<div class="card" onclick="openF(${si},${fi})"><span>${f.datum}</span>${f.tip==='video' ? `<div style="background:#111; height:180px; display:flex; align-items:center; justify-content:center; color:var(--green)">[ VIDEO FAJL ]</div>` : `<img src="${f.url}">`}<h3>${f.ime}</h3></div>`;
+                let mediaHtml = "";
+                
+                if(f.tip === 'video') {
+                    // Ako je video, pokušaj da izvučeš ID i napraviš thumbnail pozadinu
+                    let vId = f.url.includes('/d/') ? f.url.split('/d/')[1].split('/')[0] : "";
+                    if(vId && vId !== "PASTE_ID_OVDE") {
+                        let thumb = `https://drive.google.com/thumbnail?id=${vId}&sz=w1000`;
+                        mediaHtml = `
+                            <div class="video-thumb-container">
+                                <img src="${thumb}" style="filter: brightness(0.6);">
+                                <div class="play-overlay">▶</div>
+                            </div>`;
+                    } else {
+                        // Ako ID još nije ubačen, ostaje siva pozadina
+                        mediaHtml = `<div style="background:#111; height:180px; display:flex; align-items:center; justify-content:center; color:var(--green)">[ ČEKA SE ID ]</div>`;
+                    }
+                } else {
+                    // Za slike ostaje sve isto kao pre
+                    mediaHtml = `<img src="${f.url}">`;
+                }
+
+                document.getElementById(`g-${si}`).innerHTML += `
+                    <div class="card" onclick="openF(${si},${fi})">
+                        <span>${f.datum}</span>
+                        ${mediaHtml}
+                        <h3 style="text-shadow: 2px 2px 4px #000;">${f.ime}</h3>
+                    </div>`;
             });
         });
     }
@@ -268,7 +301,3 @@
 </script>
 </body>
 </html>
-
-
-
-
