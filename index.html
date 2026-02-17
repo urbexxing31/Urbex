@@ -2,13 +2,26 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <title>KONTROLA GRADA| Urbex Archive </title>
+    <title>KONTROLA GRADA | Urbex Archive </title>
     <style>
         :root { --green: #00ff41; --bg: #050505; --red: #ff0000; }
         body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; overflow-x: hidden; }
+        
+        /* SCANLINE EFEKAT */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 9999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
         
-        /* NOVI WARNING SCREEN STIL */
         #warning-screen {
             position: fixed; inset: 0; background: #000; z-index: 5000;
             display: flex; justify-content: center; align-items: center; text-align: center;
@@ -43,10 +56,6 @@
         .arrow-left { left: -80px; }
         .arrow-right { right: -80px; }
 
-        @media (max-width: 1100px) {
-            .nav-arrow { position: static; transform: none; display: inline-block; margin: 10px 40px; }
-        }
-        
         #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; justify-content: center; align-items: center; text-align: center; }
         .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
         input { background: #000; border: 1px solid var(--green); color: var(--green); padding: 10px; text-align: center; margin: 10px; outline: none; width: 250px; font-size: 1.2em; }
@@ -91,9 +100,11 @@
         <h1>SYSTEM READY</h1>
         <div style="border: 1px dashed var(--green); padding: 20px;">
             <p style="color: yellow;">[!] SECURITY ALERT: Encrypted connection active.</p>
-            <p>> NAPOMENA: Svi snimci su digitalno osvetljeni i audio je filtriran radi bolje preglednosti.</p>
-            <p>> KAKO UCI: Mozete uci u nasu Instagram grupu, follow p_mihajlo1 i posaljite messege!</p>
-            <p>> LOKACIJA FAJLOVA: D:\URBEX</p>
+            <p>> KORISNIK: <span id="user-status">OPERATOR_VRŠAC</span></p>
+            <p>> LOKALNO VREME: <span id="clock" style="color:white">00:00:00</span></p>
+            <p>> NAPOMENA: Svi snimci su digitalno osvetljeni i audio je filtriran.</p>
+            <p>> INSTAGRAM: Zapratite <span style="color:white">p_mihajlo1</span> za pristup grupi.</p>
+            <p>> LOKACIJA FAJLOVA: D:\URBEX\VRŠAC_DATA</p>
             <p>> STATUS: <span style="color:var(--red)">AI_PROCESSED_FICTION</span></p>
         </div>
     </div>
@@ -115,7 +126,23 @@
 </div>
 
 <script>
-    // FUNKCIJA ZA ULAZ (NOVO)
+    // BEZBEDNOST: Onemogući desni klik i prečice za inspect
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123) return false;
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+    }
+
+    // SAT U PANELU
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + 
+                                                   now.getMinutes().toString().padStart(2, '0') + ":" + 
+                                                   now.getSeconds().toString().padStart(2, '0');
+    }, 1000);
+
     function acceptWarning() {
         document.getElementById('warning-screen').style.display = 'none';
         document.getElementById('login').style.display = 'flex';
@@ -279,7 +306,7 @@
 
                 document.getElementById(`g-${si}`).innerHTML += `
                     <div class="card" onclick="openF(${si},${fi})">
-                        <span>${f.datum}</span>
+                        <span style="font-size: 0.8em; opacity: 0.7;">${f.datum}</span>
                         ${mediaHtml}
                         <h3 style="text-shadow: 2px 2px 4px #000;">${f.ime}</h3>
                     </div>`;
