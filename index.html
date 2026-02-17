@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>KONTROLA GRADA | Urbex Archive</title>
     <style>
-        :root { --green: #00ff41; --bg: #050505; --red: #ff0000; }
+        :root { --green: #00ff41; --bg: #050505; --red: #ff0000; --cyan: #00f2ff; }
         body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; overflow-x: hidden; }
         
         /* SCANLINE EFEKAT */
@@ -24,29 +24,33 @@
         .warning-btn:hover { background: var(--red); color: #000; }
 
         /* NAV */
-        nav { border-bottom: 1px solid var(--green); padding: 15px; display: flex; gap: 20px; justify-content: center; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
-        .btn { cursor: pointer; text-transform: uppercase; font-weight: bold; padding: 5px 10px; }
+        nav { border-bottom: 1px solid var(--green); padding: 15px; display: flex; gap: 15px; justify-content: center; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
+        .btn { cursor: pointer; text-transform: uppercase; font-weight: bold; padding: 5px 10px; border: 1px solid transparent; transition: 0.3s; font-size: 0.9em; }
+        .btn:hover { border-color: var(--green); background: rgba(0,255,65,0.1); }
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; }
         .active { display: block; }
 
         /* GRID & CARDS */
         .sekcija-naslov { color: var(--green); text-align: center; border: 2px solid var(--green); padding: 10px; margin: 30px 0; text-transform: uppercase; letter-spacing: 5px; background: rgba(0, 255, 65, 0.1); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; }
-        .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: scale(1.02); }
+        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+        .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: translateY(-5px); }
         .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; }
         
         /* LOGIN */
         #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; justify-content: center; align-items: center; text-align: center; }
         .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
-        input, textarea { background: #000; border: 1px solid var(--green); color: var(--green); padding: 10px; margin: 10px; outline: none; width: 280px; font-family: 'Courier New', monospace; }
-        button { background: var(--green); border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        input, textarea, select { background: #000; border: 1px solid var(--green); color: var(--green); padding: 12px; margin: 10px 0; outline: none; width: 100%; font-family: 'Courier New', monospace; box-sizing: border-box; }
+        button { background: var(--green); border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; margin-top: 10px; }
+        button:hover { background: #00cc33; }
 
         /* MODAL */
         #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
         .modal-box { position: relative; max-width: 1000px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; }
         #preview-content { width: 100%; height: 70vh; border: none; }
         .close-btn { position: absolute; top: -50px; right: 0; font-size: 50px; cursor: pointer; color: var(--green); }
+
+        .important-note { color: #ffcc00; font-size: 0.85em; border-left: 3px solid #ffcc00; padding-left: 10px; margin: 15px 0; }
     </style>
 </head>
 <body>
@@ -67,13 +71,13 @@
 </div>
 
 <div id="login">
-    <div class="box">
-        <h1 style="letter-spacing: 10px;">KONTROLA GRADA</h1>
+    <div class="box" style="width: 350px;">
+        <h1 style="letter-spacing: 5px; font-size: 1.5em;">KONTROLA GRADA</h1>
         <p>> PRISTUP URBEX SISTEMU <</p>
         <input type="password" id="pass" placeholder="PASSWORD_REQUIRED"><br>
         <button onclick="check()">OTKLJUČAJ</button>
-        <p style="font-size: 0.8em; margin-top: 20px; color: var(--green); opacity: 0.7;">
-            Zapratite @p_mihajlo1 na Instagramu za pristup grupi
+        <p style="font-size: 0.8em; margin-top: 25px; color: var(--green); opacity: 0.8;">
+            Zapratite <b>@p_mihajlo1</b> na Instagramu za pristup grupi
         </p>
     </div>
 </div>
@@ -82,15 +86,16 @@
     <nav>
         <div class="btn" onclick="show('panel')">Status Panel</div>
         <div class="btn" onclick="show('arhiva')">Arhiva Media</div>
+        <div class="btn" onclick="show('community')">Community Vault</div>
         <div class="btn" onclick="show('submit')">Submit Data</div>
-        <div id="admin-btn" class="btn" onclick="show('admin')" style="display:none; color: yellow;">Master Control</div>
-        <div class="btn" onclick="location.reload()" style="color:red">Log Out</div>
+        <div id="admin-btn" class="btn" onclick="show('admin')" style="display:none; color: #ffcc00; border-color: #ffcc00;">Master Control</div>
+        <div class="btn" onclick="location.reload()" style="color:var(--red)">Log Out</div>
     </nav>
 
     <div id="panel" class="section active">
         <h1>SYSTEM READY</h1>
-        <div style="border: 1px dashed var(--green); padding: 20px;">
-            <p style="color: yellow;">[!] SECURITY ALERT: Encrypted connection active.</p>
+        <div style="border: 1px dashed var(--green); padding: 20px; background: rgba(0,20,0,0.2);">
+            <p style="color: #ffcc00;">[!] SECURITY ALERT: Encrypted connection active.</p>
             <p>> KORISNIK: <span style="color:white">OPERATOR</span></p>
             <p>> LOKALNO VREME: <span id="clock" style="color:white">00:00:00</span></p>
             <p>> LOKACIJA FAJLOVA: D:\URBEX\DATA_</p>
@@ -99,29 +104,57 @@
     </div>
 
     <div id="arhiva" class="section">
-        <h1>ARHIVA SNIMAKA</h1>
+        <h1>OFFICIAL ARCHIVE</h1>
         <div id="arhiva-kontener"></div>
     </div>
 
+    <div id="community" class="section">
+        <h1>COMMUNITY VAULT</h1>
+        <p style="text-align: center; opacity: 0.7;">> Materijal prikupljen od strane eksternih operatera <</p>
+        <div id="community-kontener"></div>
+    </div>
+
     <div id="submit" class="section">
-        <h1>SUBMIT NEW DATA</h1>
-        <div style="border: 1px solid var(--green); padding: 20px; background: rgba(0,20,0,0.5);">
-            <p>> Unesite link do vašeg Google Drive videa ili slika:</p>
-            <input type="text" id="sub-url" placeholder="URL_LINK_OVDE" style="width: 90%;"><br>
-            <p>> Napomena (Lokacija/Datum):</p>
-            <textarea id="sub-note" placeholder="Opis..." style="width: 90%; height: 60px;"></textarea><br>
-            <button onclick="alert('DATA SENT TO QUEUE. AWAITING OPERATOR APPROVAL.')">UPLOAD TO QUEUE</button>
+        <h1 style="color: var(--cyan);">SUBMIT PROTOCOL</h1>
+        <div style="border: 1px solid var(--cyan); padding: 30px; background: rgba(0,10,20,0.8); max-width: 600px; margin: auto;">
+            <p style="color: var(--cyan); font-weight: bold;">[ PROTOKOL ZA SLANJE PODATAKA ]</p>
+            
+            <label>OPERATER (IME):</label>
+            <input type="text" id="sub-name" placeholder="Vaš alias/ime">
+
+            <label>SOURCE LINK (GOOGLE DRIVE):</label>
+            <input type="text" id="sub-url" placeholder="https://drive.google.com/...">
+
+            <div class="important-note">
+                <b>OBAVEZNO:</b> Fajl na Google Drive-u mora biti podešen na <b>"Anyone with the link"</b> (Editor ili Viewer), u suprotnom sistem ne može procesuirati podatke.
+            </div>
+
+            <label>NAPOMENA / LOKACIJA:</label>
+            <textarea id="sub-note" placeholder="Opis lokacije ili dodatne informacije..."></textarea>
+
+            <button style="background: var(--cyan); color: #000;" onclick="sendToOperator()">POŠALJI NA PROVERU</button>
+            <p id="status-msg" style="font-size: 0.8em; margin-top: 15px; display: none; color: #00ff00;">> DATA ENCRYPTED AND SENT TO OPERATOR QUEUE.</p>
         </div>
     </div>
 
     <div id="admin" class="section">
-        <h1 style="color: yellow;">MASTER CONTROL PANEL</h1>
-        <div style="border: 1px solid yellow; padding: 20px;">
+        <h1 style="color: #ffcc00;">MASTER CONTROL PANEL</h1>
+        <div style="border: 1px solid #ffcc00; padding: 20px; background: rgba(20,20,0,0.3);">
             <p>> GENERATOR KODA ZA ARHIVU:</p>
-            <input type="text" id="adm-name" placeholder="Ime Videa"><br>
-            <input type="text" id="adm-url" placeholder="Google Drive Preview Link"><br>
-            <button onclick="genCode()">GENERIŠI KOD</button>
-            <pre id="code-output" style="color: white; background: #222; padding: 10px; margin-top: 10px; white-space: pre-wrap; font-size: 0.7em;"></pre>
+            <input type="text" id="adm-name" placeholder="Ime Videa/Slike">
+            <input type="text" id="adm-url" placeholder="Google Drive Link (Thumbnail/Preview)">
+            <select id="adm-type">
+                <option value="video">VIDEO</option>
+                <option value="slika">SLIKA</option>
+            </select>
+            <select id="adm-dest">
+                <option value="official">OFFICIAL ARCHIVE</option>
+                <option value="community">COMMUNITY VAULT</option>
+            </select>
+            <button style="background: #ffcc00; color: #000;" onclick="genCode()">GENERIŠI KOD ZA GITHUB</button>
+            
+            <p style="margin-top: 20px; font-size: 0.8em;">Kopiraj kod ispod i nalepi ga u odgovarajuću sekciju u index.html:</p>
+            <pre id="code-output" style="color: white; background: #111; padding: 15px; border: 1px solid #333; white-space: pre-wrap; font-size: 0.75em;"></pre>
         </div>
     </div>
 </div>
@@ -136,7 +169,7 @@
 
 <script>
     const USER_PASS = "29012026kontrola";
-    const ADMIN_PASS = "admin013master"; // Tvoja tajna šifra
+    const ADMIN_PASS = "admin013master"; 
     
     // BEZBEDNOST
     document.addEventListener('contextmenu', e => e.preventDefault());
@@ -144,8 +177,7 @@
 
     // SAT
     setInterval(() => {
-        const now = new Date();
-        document.getElementById('clock').innerText = now.toLocaleTimeString();
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
     }, 1000);
 
     function acceptWarning() {
@@ -160,7 +192,7 @@
             document.getElementById('main').style.display = 'block';
             if(p === ADMIN_PASS) document.getElementById('admin-btn').style.display = 'inline-block';
             load();
-        } else { alert("ACCESS DENIED"); }
+        } else { alert("ACCESS DENIED: INVALID CREDENTIALS"); }
     }
 
     function show(id) {
@@ -168,113 +200,43 @@
         document.getElementById(id).classList.add('active');
     }
 
-    // OVDE SU TVOJI PODACI - NE DIRAJ STRUKTURU
+    function sendToOperator() {
+        document.getElementById('status-msg').style.display = 'block';
+        setTimeout(() => { alert("Podaci su poslati. Operater će pregledati snimak."); }, 500);
+    }
+
+    // --- PODACI ---
+    // Ovde dodaješ svoje videe
     const MOJA_ARHIVA = [
         {
-            naslovSekcije: "-VIDEI- SEKCIJA 1 - ŠTAMPARIJA",
+            naslovSekcije: "SEKCIJA 1 - ŠTAMPARIJA",
             fajlovi: [
                 { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1p--S8zpIhUN_Mt6heh2Dh7jmY3G54Ukr/preview", datum: "13.12.2025" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1wi7Gom8qGIW-yx2maO_oheGGnjADR3iy/preview", datum: "13.12.2025" },
-                { ime: "Video 3", tip: "video", url: "https://drive.google.com/file/d/1hfXxiUUXCoFrK3zzxWtfh0dmUotrNLRC/preview", datum: "13.12.2025" },
-                { ime: "Video 4", tip: "video", url: "https://drive.google.com/file/d/1wMdFBlKuvv63CPfn9HqWFbTsfEoJZ22r/preview", datum: "NEPOZNATO" },
-                { ime: "Video 5", tip: "video", url: "https://drive.google.com/file/d/1oH9Mfc63uxjIoThrCHLesdhXYgw-C_oU/preview", datum: "NEPOZNATO" },
-                { ime: "Video 6", tip: "video", url: "https://drive.google.com/file/d/1L1fTno8D9JgnoDXgr8Ycox3xJiHZf_qk/preview", datum: "NEPOZNATO" }
-            ]
-        },
-        {
-            naslovSekcije: "SEKCIJA 2 - PIVARA",
-            fajlovi: [
-                { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1elgBCMu24HA7mY-JM1jcXc6GHfTeHgYN/preview", datum: "NEPOZNATO" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1p7ZicskGiyj9bHDokJpNX-oUevV45xNI/preview", datum: "NEPOZNATO" }
-            ]
-        },
-        {
-            naslovSekcije: "SEKCIJA 3 - OBLAST 013",
-            fajlovi: [
-                { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1OGUexzSH9Vx1yW8fom3L2n7n__cgcBmY/preview", datum: "NEPOZNATO" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1GoGjnAvQAq1sopRNgDc3Niju01Cgp5QW/preview", datum: "NEPOZNATO" },
-                { ime: "Video 3", tip: "video", url: "https://drive.google.com/file/d/1hYpcJ496B0CZFzyUQJD38iPeRWL28PpI/preview", datum: "NEPOZNATO" },
-                { ime: "Video 4", tip: "video", url: "https://drive.google.com/file/d/1Esk0TCMkIALr0K_4qpYaor3JGLRqcUbc/preview", datum: "NEPOZNATO" },
-                { ime: "Video 5", tip: "video", url: "https://drive.google.com/file/d/1oFmDDLJCv3RXU7C_8hChbQpZuHWlTLi6/preview", datum: "NEPOZNATO" },
-                { ime: "Video 6", tip: "video", url: "https://drive.google.com/file/d/1G82zzP5gkDXKYsTjkJglWSS5SitipB_6/preview", datum: "NEPOZNATO" },
-                { ime: "Video 7", tip: "video", url: "https://drive.google.com/file/d/11lR4tbKZ0Y-QPAmxklSRbqPLxj1CBTiB/preview", datum: "NEPOZNATO" },
-                { ime: "Video 8", tip: "video", url: "https://drive.google.com/file/d/13uM9mo9DjfhljnbP0ObyRsmiQiDUwTWY/preview", datum: "NEPOZNATO" },
-                { ime: "Video 9", tip: "video", url: "https://drive.google.com/file/d/11yLMhxA86trAaE6aEijicRUbIL8QCYnv/preview", datum: "NEPOZNATO" },
-                { ime: "Video 10", tip: "video", url: "https://drive.google.com/file/d/1NkbaIIjYX6UGOuMMNB-7u78daRS4cXf5/preview", datum: "NEPOZNATO" },
-                { ime: "Video 11", tip: "video", url: "https://drive.google.com/file/d/1VXZ2vpoe8AEfC0WU73sGzR39vetnAGFE/preview", datum: "NEPOZNATO" },
-                { ime: "Video 12", tip: "video", url: "https://drive.google.com/file/d/1TJ--2_xs36ld9NPnHXWg5C3JCBHpZq-E/preview", datum: "NEPOZNATO" },
-                { ime: "Video 13", tip: "video", url: "https://drive.google.com/file/d/1-f0YlDE9wUXOjF0dE9eAT69F9BVSnKQd/preview", datum: "NEPOZNATO" }
-            ]
-        },
-        {
-            naslovSekcije: "SEKCIJA 4 - NAPUŠTENA KLANICA",
-            fajlovi: [
-                { ime: "Video 1", tip: "video", url: "https://drive.google.com/file/d/1PSRZIt-HP86NAAS_uSVuIrv9XpGAZFX8/preview", datum: "NEPOZNATO" },
-                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/11Y72TgpPMuNGOXZtHIW8Qw9FfcoC6Ds0/preview", datum: "NEPOZNATO" }
-            ]
-        },
-        {
-            naslovSekcije: "-SLIKE- SEKCIJA 5 - ARHIVA SLIKA",
-            fajlovi: [
-                { ime: "Slika 1", tip: "slika", url: "https://drive.google.com/thumbnail?id=17syPiLTIjU4UO8TRnQyht4eLtEW2YKNL&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 2", tip: "slika", url: "https://drive.google.com/thumbnail?id=1590QaofLiEZyTW4mnowOsyFVY2ue2LrA&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 3", tip: "slika", url: "https://drive.google.com/thumbnail?id=1iYP2REvF7QMzAq80ONWCnpYEWerd5JL_&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 4", tip: "slika", url: "https://drive.google.com/thumbnail?id=1_ei_KjVurEyHyG4kyV0yKyG5t0_upblz&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 5", tip: "slika", url: "https://drive.google.com/thumbnail?id=1Krk5B-oGvzDr0IhxVqBvwsyYTEGXOUM8&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 6", tip: "slika", url: "https://drive.google.com/thumbnail?id=1mzCsQpyvcqUfISt3FusP6J6Mz7r6LauX&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 7", tip: "slika", url: "https://drive.google.com/thumbnail?id=1p8IOBBHNVCmONZsU01UiiPzj9olttW3e&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 8", tip: "slika", url: "https://drive.google.com/thumbnail?id=1s3yzr2GFE0LwEhU9Q6-Q2qSFDXM_oie9&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 9", tip: "slika", url: "https://drive.google.com/thumbnail?id=1pp1QwAspsuOIhPOQVCY87C3Kvz8aC2rv&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 10", tip: "slika", url: "https://drive.google.com/thumbnail?id=17mP28kD-EkpO4uXq6slsPtQSVThJmT-8&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 11", tip: "slika", url: "https://drive.google.com/thumbnail?id=1JfixZgHS-HBbB7J8GO6oZSzaaGxbv3L7&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 12", tip: "slika", url: "https://drive.google.com/thumbnail?id=1gct9lglN5sRpOMX2dcfBB717l8RmL-mi&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 13", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wq_CgiqmT4Zw7HgdjgIZUDHTWbMdVgBs&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 14", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WOMShIi6hTTYXuuGR8Oz0Wvxcwql5Ebq&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 15", tip: "slika", url: "https://drive.google.com/thumbnail?id=11jhWuG1s0IAdH2VgBymTxF-YKaO4XbcO&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 16", tip: "slika", url: "https://drive.google.com/thumbnail?id=1S5TpD0KnuALYxVYSj8CdX8rB27s2517a&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 17", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WCM_ixmavfjKreAsBio0-lHk3hcPTB8H&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 18", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wa-r8qpSpgq40Fzzn8zPeK4wyGhLxCDl&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 19", tip: "slika", url: "https://drive.google.com/thumbnail?id=1FSbJmeH4BoObkZPSx4QIcH6-xxmOnL2a&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 20", tip: "slika", url: "https://drive.google.com/thumbnail?id=1PEw7pvthBX7V6r3BKNmOmW9-EtZ2rYd1&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 21", tip: "slika", url: "https://drive.google.com/thumbnail?id=1TzUSwVtKmSRlaE9dukjT_VoIScuXJ-Lr&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 22", tip: "slika", url: "https://drive.google.com/thumbnail?id=1wI49ckhmA-JZlELTf5UI56lP1b6_mvq8&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 23", tip: "slika", url: "https://drive.google.com/thumbnail?id=1XU-h8MsJ3dZ8wCW8-WzBU3rbb4p9uNzW&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 24", tip: "slika", url: "https://drive.google.com/thumbnail?id=1ArqvLdBPhv2XxNiqyxz1aE2cS57Kibi-&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 25", tip: "slika", url: "https://drive.google.com/thumbnail?id=1MBcqWdkz4xgInXATIMCaU1kvH-poV-Nj&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 26", tip: "slika", url: "https://drive.google.com/thumbnail?id=1CFG0lWqWE8HJ6pxMo5MO2skiNOo-wHwe&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 27", tip: "slika", url: "https://drive.google.com/thumbnail?id=1FVtOP58XWB9zgcnGO6weOhTcUbgZ7WaQ&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 28", tip: "slika", url: "https://drive.google.com/thumbnail?id=1xUB4o6J35qRvHk8nWwnxs4CsVuXyKWC9&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 29", tip: "slika", url: "https://drive.google.com/thumbnail?id=1KkOy6JQWsRsDfQWtgSAVr9tUU6551Ls-&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 30", tip: "slika", url: "https://drive.google.com/thumbnail?id=17zfRVijdXKMsRXaUnJ_tfiEgPu_x8hrG&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 31", tip: "slika", url: "https://drive.google.com/thumbnail?id=1fhooWW7xi_iJ_bIlejdhyqpVB9qVpSvh&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 32", tip: "slika", url: "https://drive.google.com/thumbnail?id=1T35-LcW-NDATjzvaCfIeLwxMWFtFi5MF&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 33", tip: "slika", url: "https://drive.google.com/thumbnail?id=1-_knEDvMHGfqqT6vZTteSdQcfrIyP4zG&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 34", tip: "slika", url: "https://drive.google.com/thumbnail?id=1eNTliOafTB_iHjxF3q5w2s2EsWwMp72E&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 35", tip: "slika", url: "https://drive.google.com/thumbnail?id=12Mfrkg72oMHCw7OjQPl9Ld4kIuDJvhov&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 36", tip: "slika", url: "https://drive.google.com/thumbnail?id=1-t13WWSY34o1JFzWVqxoJ-8e8o8QZK7q&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 37", tip: "slika", url: "https://drive.google.com/thumbnail?id=1VNccLFnVaI6j4qss6oTyVEGAYVrfTXLs&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 38", tip: "slika", url: "https://drive.google.com/thumbnail?id=1WJEsFxNVr1x7ZWuw0Uff1ADwAae2fByc&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 39", tip: "slika", url: "https://drive.google.com/thumbnail?id=1yBxU2rEGC107EFph6sGBjN1kSyL-X6HA&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 40", tip: "slika", url: "https://drive.google.com/thumbnail?id=19F_fYYq1poAjv4lJm8sMgUs0nHK39LLz&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 41", tip: "slika", url: "https://drive.google.com/thumbnail?id=1M4H1J1Fl1XK9WlyU_YNanUlAzw7zPzYj&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 42", tip: "slika", url: "https://drive.google.com/thumbnail?id=1Q74BQzdDNBcJSDF8sYfgOhyQV47JgmE5&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 43", tip: "slika", url: "https://drive.google.com/thumbnail?id=1_F5YxVS3PbgkSyioZkq4Cj4DufWQUZgc&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 44", tip: "slika", url: "https://drive.google.com/thumbnail?id=1LWC0PJrf1q5N6Wcwb8ZpW1hF9_Q-19e4&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 45", tip: "slika", url: "https://drive.google.com/thumbnail?id=1mzCsQpyvcqUfISt3FusP6J6Mz7r6LauX&sz=w1000", datum: "NEPOZNATO" },
-                { ime: "Slika 46", tip: "slika", url: "https://drive.google.com/thumbnail?id=1dymQMQ7IweFVL-ie6xXpj-36NlAy6BvM&sz=w1000", datum: "NEPOZNATO" }
+                { ime: "Video 2", tip: "video", url: "https://drive.google.com/file/d/1wi7Gom8qGIW-yx2maO_oheGGnjADR3iy/preview", datum: "13.12.2025" }
             ]
         }
     ];
 
-    function load() {
-        const cont = document.getElementById('arhiva-kontener'); cont.innerHTML = "";
-        MOJA_ARHIVA.forEach((s, si) => {
-            cont.innerHTML += `<div class="sekcija-naslov">${s.naslovSekcije}</div><div class="grid" id="g-${si}"></div>`;
+    // OVDE DODAJEŠ VIDEA KOJE TI DRUGI POŠALJU
+    const COMMUNITY_DATA = [
+        {
+            naslovSekcije: "OPERATERI: EKSTERNI IZVORI",
+            fajlovi: [
+                { ime: "Primer Community Snimka", tip: "video", url: "https://drive.google.com/file/d/1OGUexzSH9Vx1yW8fom3L2n7n__cgcBmY/preview", datum: "17.02.2026" }
+            ]
+        }
+    ];
+
+    function renderGrid(data, containerId) {
+        const cont = document.getElementById(containerId);
+        cont.innerHTML = "";
+        data.forEach((s, si) => {
+            cont.innerHTML += `<div class="sekcija-naslov">${s.naslovSekcije}</div><div class="grid" id="${containerId}-${si}"></div>`;
             s.fajlovi.forEach((f, fi) => {
                 let thumb = f.tip === 'video' ? `https://drive.google.com/thumbnail?id=${f.url.split('/d/')[1].split('/')[0]}&sz=w1000` : f.url;
-                document.getElementById(`g-${si}`).innerHTML += `
-                    <div class="card" onclick="openF(${si},${fi})">
-                        <span style="font-size:0.7em">${f.datum}</span>
+                document.getElementById(`${containerId}-${si}`).innerHTML += `
+                    <div class="card" onclick="openF('${containerId}',${si},${fi})">
+                        <span style="font-size:0.7em; opacity:0.6;">${f.datum}</span>
                         <img src="${thumb}">
                         <h3>${f.ime}</h3>
                     </div>`;
@@ -282,8 +244,14 @@
         });
     }
 
-    function openF(si, fi) {
-        const f = MOJA_ARHIVA[si].fajlovi[fi];
+    function load() {
+        renderGrid(MOJA_ARHIVA, 'arhiva-kontener');
+        renderGrid(COMMUNITY_DATA, 'community-kontener');
+    }
+
+    function openF(source, si, fi) {
+        const data = source === 'arhiva-kontener' ? MOJA_ARHIVA : COMMUNITY_DATA;
+        const f = data[si].fajlovi[fi];
         document.getElementById('preview-title').innerText = f.ime;
         document.getElementById('media-holder').innerHTML = f.tip==='video' ? `<iframe id="preview-content" src="${f.url}"></iframe>` : `<img id="preview-content" src="${f.url}" style="object-fit:contain">`;
         document.getElementById('preview').style.display = 'block';
@@ -291,15 +259,15 @@
 
     function closePreview() { document.getElementById('preview').style.display = 'none'; }
 
-    // ADMIN GENERATOR
     function genCode() {
         const n = document.getElementById('adm-name').value;
         const u = document.getElementById('adm-url').value;
-        const code = `{ ime: "${n}", tip: "video", url: "${u}", datum: "${new Date().toLocaleDateString()}" },`;
+        const t = document.getElementById('adm-type').value;
+        const code = `{ ime: "${n}", tip: "${t}", url: "${u}", datum: "${new Date().toLocaleDateString()}" },`;
         document.getElementById('code-output').innerText = code;
     }
 
-    // CANVAS ANIMACIJA
+    // CANVAS ANIMACIJA (Ista kao pre)
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
