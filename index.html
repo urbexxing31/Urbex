@@ -8,46 +8,47 @@
         body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; margin: 0; overflow-x: hidden; }
         body::after { content: " "; display: block; position: fixed; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 9999; background-size: 100% 2px, 3px 100%; pointer-events: none; }
         #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; }
+        
+        /* WARNING SCREEN */
         #warning-screen { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; justify-content: center; align-items: center; text-align: center; color: var(--red); padding: 20px; }
         .warning-box { border: 2px solid var(--red); padding: 30px; max-width: 700px; background: rgba(30, 0, 0, 0.9); box-shadow: 0 0 20px var(--red); }
         .warning-btn { background: transparent; border: 1px solid var(--red); color: var(--red); padding: 15px 30px; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.3s; }
         .warning-btn:hover { background: var(--red); color: #000; }
+
+        /* NAV & SECTIONS */
         nav { border-bottom: 1px solid var(--green); padding: 15px; display: flex; gap: 15px; justify-content: center; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
         .btn { cursor: pointer; text-transform: uppercase; font-weight: bold; padding: 5px 10px; border: 1px solid transparent; transition: 0.3s; font-size: 0.9em; }
         .btn:hover { border-color: var(--green); background: rgba(0,255,65,0.1); }
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; }
         .active { display: block; }
         
-        /* STRELICE I NASLOVI SEKCIJA */
-        .sekcija-naslov { 
-            color: var(--green); 
-            text-align: center; 
-            border: 2px solid var(--green); 
-            padding: 10px; 
-            margin: 30px 0; 
-            text-transform: uppercase; 
-            letter-spacing: 5px; 
-            background: rgba(0, 255, 65, 0.1);
-            position: relative;
-        }
-        .sekcija-naslov::before { content: ">>> "; color: var(--green); }
-        .sekcija-naslov::after { content: " <<<"; color: var(--green); }
+        .sekcija-naslov { color: var(--green); text-align: center; border: 2px solid var(--green); padding: 10px; margin: 30px 0; text-transform: uppercase; letter-spacing: 5px; background: rgba(0, 255, 65, 0.1); }
+        .sekcija-naslov::before { content: ">>> "; } .sekcija-naslov::after { content: " <<<"; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+        .card { border: 1px solid #222; padding: 10px; background: rgba(10, 10, 10, 0.9); cursor: pointer; text-align: center; transition: 0.3s; position: relative; }
         .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: translateY(-5px); }
         .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; }
-        
-        #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; justify-content: center; align-items: center; text-align: center; }
-        .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
-        input, textarea, select { background: #000; border: 1px solid var(--green); color: var(--green); padding: 12px; margin: 10px 0; outline: none; width: 100%; font-family: 'Courier New', monospace; box-sizing: border-box; }
-        button { background: var(--green); border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; margin-top: 10px; }
-        
-        #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
-        .modal-box { position: relative; max-width: 1000px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; }
-        #preview-content { width: 100%; height: 70vh; border: none; }
+
+        /* PREVIEW MODAL SA NAVIGACIJOM */
+        #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; }
+        .modal-box { position: relative; max-width: 1100px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; text-align: center; }
+        #preview-content { width: 100%; height: 75vh; border: none; }
         .close-btn { position: absolute; top: -50px; right: 0; font-size: 50px; cursor: pointer; color: var(--green); }
+        
+        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 50px; color: var(--green); cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; border: 1px solid var(--green); user-select: none; transition: 0.3s; }
+        .nav-arrow:hover { background: var(--green); color: #000; }
+        .arrow-left { left: -70px; }
+        .arrow-right { right: -70px; }
+
+        /* LOGIN & FORMS */
+        #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; text-align: center; box-shadow: 0 0 20px var(--green); }
+        input, textarea, select { background: #000; border: 1px solid var(--green); color: var(--green); padding: 12px; margin: 10px 0; outline: none; width: 100%; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        button { background: var(--green); border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; margin-top: 10px; }
         .important-note { color: #ffcc00; font-size: 0.85em; border-left: 3px solid #ffcc00; padding-left: 10px; margin: 15px 0; text-align: left; }
+
+        @media (max-width: 1200px) { .nav-arrow { position: static; transform: none; display: inline-block; margin: 10px 20px; } .arrow-left, .arrow-right { left: auto; right: auto; } }
     </style>
 </head>
 <body>
@@ -56,26 +57,17 @@
 
 <div id="warning-screen">
     <div class="warning-box">
-        <h1 style="letter-spacing: 5px;">⚠️ PRISTUP OGRANIČEN ⚠️</h1>
-        <p style="text-align: left; font-size: 0.85em; line-height: 1.6;">
-            [!] DIGITALNA SIMULACIJA: Sadržaj je produkt kreativne montaže i AI obrade.<br>
-            [!] AUDIO/VIZUELNI REKVIZITI: Svi prikazi su urađeni korišćenjem SFX efekata.<br>
-            [!] FIKCIJA: Učesnici su glumci. Lokacije su filmski setovi.<br>
-            [!] ODRICANJE: Autor ne promoviše kršenje zakona.
-        </p>
+        <h1>⚠️ PRISTUP OGRANIČEN ⚠️</h1>
+        <p style="text-align: left; font-size: 0.85em;">[!] DIGITALNA SIMULACIJA: Sadržaj je produkt kreativne montaže i AI obrade. Autor ne promoviše kršenje zakona.</p>
         <button class="warning-btn" onclick="acceptWarning()">POTVRĐUJEM DA JE SADRŽAJ FIKCIONALAN</button>
     </div>
 </div>
 
 <div id="login">
     <div class="box" style="width: 350px;">
-        <h1 style="letter-spacing: 5px; font-size: 1.5em;">KONTROLA GRADA</h1>
-        <p>> PRISTUP URBEX SISTEMU <</p>
-        <input type="password" id="pass" placeholder="PASSWORD_REQUIRED"><br>
+        <h1>KONTROLA GRADA</h1>
+        <input type="password" id="pass" placeholder="PASSWORD_REQUIRED">
         <button onclick="check()">OTKLJUČAJ</button>
-        <p style="font-size: 0.8em; margin-top: 25px; color: var(--green); opacity: 0.8;">
-            Zapratite <b>@p_mihajlo1</b> na Instagramu za pristup grupi
-        </p>
     </div>
 </div>
 
@@ -85,17 +77,14 @@
         <div class="btn" onclick="show('arhiva')">Arhiva Media</div>
         <div class="btn" onclick="show('community')">Community Vault</div>
         <div class="btn" onclick="show('submit')">Submit Data</div>
-        <div id="admin-btn" class="btn" onclick="show('admin')" style="display:none; color: #ffcc00; border-color: #ffcc00;">Master Control</div>
+        <div id="admin-btn" class="btn" onclick="show('admin')" style="display:none; color: #ffcc00;">Master Control</div>
         <div class="btn" onclick="location.reload()" style="color:var(--red)">Log Out</div>
     </nav>
 
     <div id="panel" class="section active">
         <h1>SYSTEM READY</h1>
-        <div style="border: 1px dashed var(--green); padding: 20px; background: rgba(0,20,0,0.2);">
-            <p style="color: #ffcc00;">[!] SECURITY ALERT: Encrypted connection active.</p>
-            <p>> KORISNIK: <span style="color:white">OPERATOR</span></p>
-            <p>> LOKALNO VREME: <span id="clock" style="color:white">00:00:00</span></p>
-            <p>> LOKACIJA FAJLOVA: D:\URBEX\DATA_</p>
+        <div style="border: 1px dashed var(--green); padding: 20px;">
+            <p>> KORISNIK: OPERATOR | LOKALNO VREME: <span id="clock">00:00:00</span></p>
             <p>> STATUS: <span style="color:var(--red)">AI_PROCESSED_FICTION</span></p>
         </div>
     </div>
@@ -112,55 +101,42 @@
 
     <div id="submit" class="section">
         <h1 style="color: var(--cyan);">SUBMIT PROTOCOL</h1>
-        <div style="border: 1px solid var(--cyan); padding: 30px; background: rgba(0,10,20,0.8); max-width: 600px; margin: auto;">
+        <div style="border: 1px solid var(--cyan); padding: 30px; max-width: 600px; margin: auto;">
             <form action="https://formspree.io/f/mreakjvd" method="POST">
-                <p style="color: var(--cyan); font-weight: bold;">[ PROTOKOL ZA SLANJE PODATAKA ]</p>
-                <label>OPERATER (IME):</label>
-                <input type="text" name="ime" placeholder="Vaš alias/ime" required>
-                <label>LINK ZA SLIKU/VIDEO (GOOGLE DRIVE):</label>
-                <input type="text" name="link" placeholder="https://drive.google.com/..." required>
-                <div class="important-note">
-                    <b>OBAVEZNO:</b> Podesite Google Drive fajl na <b>"Everyone who has link"</b> pre slanja.
-                </div>
-                <label>NAPOMENA / LOKACIJA:</label>
-                <textarea name="napomena" placeholder="Unesite detalje lokacije..."></textarea>
-                <button type="submit" style="background: var(--cyan); color: #000;">POŠALJI NA PROVERU</button>
+                <input type="text" name="ime" placeholder="OPERATER (IME)" required>
+                <input type="text" name="link" placeholder="GOOGLE DRIVE LINK" required>
+                <textarea name="napomena" placeholder="LOKACIJA / NAPOMENA"></textarea>
+                <button type="submit" style="background: var(--cyan); color: #000;">POŠALJI PODATKE</button>
             </form>
         </div>
     </div>
 
     <div id="admin" class="section">
-        <h1 style="color: #ffcc00;">MASTER CONTROL PANEL</h1>
+        <h1 style="color: #ffcc00;">MASTER CONTROL</h1>
         <div style="border: 1px solid #ffcc00; padding: 20px;">
-            <p>> GENERATOR KODA:</p>
-            <input type="text" id="adm-name" placeholder="Ime Videa/Slike">
-            <input type="text" id="adm-url" placeholder="Google Drive Link">
+            <input type="text" id="adm-name" placeholder="Ime">
+            <input type="text" id="adm-url" placeholder="URL">
             <select id="adm-type"><option value="video">VIDEO</option><option value="slika">SLIKA</option></select>
             <button style="background: #ffcc00; color: #000;" onclick="genCode()">GENERIŠI KOD</button>
-            <pre id="code-output" style="color: white; background: #111; padding: 15px; border: 1px solid #333; white-space: pre-wrap; font-size: 0.75em; margin-top:10px;"></pre>
+            <pre id="code-output" style="color: white; font-size: 0.7em;"></pre>
         </div>
     </div>
 </div>
 
-<div id="preview"><div class="modal-box"><span class="close-btn" onclick="closePreview()">&times;</span><h2 id="preview-title" style="color: var(--green); letter-spacing: 2px;"></h2><div id="media-holder"></div></div></div>
+<div id="preview">
+    <div class="modal-box">
+        <span class="close-btn" onclick="closePreview()">&times;</span>
+        <div class="nav-arrow arrow-left" onclick="changeMedia(-1)">&#10094;</div>
+        <div class="nav-arrow arrow-right" onclick="changeMedia(1)">&#10095;</div>
+        <h2 id="preview-title" style="color: var(--green);"></h2>
+        <div id="media-holder"></div>
+    </div>
+</div>
 
 <script>
     const USER_PASS = "29012026kontrola";
-    const ADMIN_PASS = "admin013master"; 
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.onkeydown = e => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) return false; };
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
-    function acceptWarning() { document.getElementById('warning-screen').style.display = 'none'; document.getElementById('login').style.display = 'flex'; }
-    function check() {
-        const p = document.getElementById('pass').value;
-        if(p === USER_PASS || p === ADMIN_PASS) {
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('main').style.display = 'block';
-            if(p === ADMIN_PASS) document.getElementById('admin-btn').style.display = 'inline-block';
-            load();
-        } else { alert("ACCESS DENIED"); }
-    }
-    function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    const ADMIN_PASS = "admin013master";
+    let currentSource = null, currentSi = null, currentFi = null;
 
     const MOJA_ARHIVA = [
         { naslovSekcije: "SEKCIJA 1 - ŠTAMPARIJA", fajlovi: [
@@ -256,27 +232,36 @@
         data.forEach((s, si) => {
             cont.innerHTML += `<div class="sekcija-naslov">${s.naslovSekcije}</div><div class="grid" id="${containerId}-${si}"></div>`;
             s.fajlovi.forEach((f, fi) => {
-                if(!f.url) return;
                 let thumb = f.tip === 'video' ? `https://drive.google.com/thumbnail?id=${f.url.split('/d/')[1].split('/')[0]}&sz=w1000` : f.url;
                 document.getElementById(`${containerId}-${si}`).innerHTML += `<div class="card" onclick="openF('${containerId}',${si},${fi})"><span style="font-size:0.7em; opacity:0.6;">${f.datum}</span><img src="${thumb}"><h3>${f.ime}</h3></div>`;
             });
         });
     }
-    function load() { renderGrid(MOJA_ARHIVA, 'arhiva-kontener'); renderGrid(COMMUNITY_DATA, 'community-kontener'); }
+
     function openF(source, si, fi) {
-        const data = source === 'arhiva-kontener' ? MOJA_ARHIVA : COMMUNITY_DATA;
+        currentSource = source; currentSi = si; currentFi = fi;
+        const data = currentSource === 'arhiva-kontener' ? MOJA_ARHIVA : COMMUNITY_DATA;
         const f = data[si].fajlovi[fi];
         document.getElementById('preview-title').innerText = f.ime;
         document.getElementById('media-holder').innerHTML = f.tip==='video' ? `<iframe id="preview-content" src="${f.url}"></iframe>` : `<img id="preview-content" src="${f.url}" style="object-fit:contain">`;
         document.getElementById('preview').style.display = 'block';
     }
-    function closePreview() { document.getElementById('preview').style.display = 'none'; }
-    function genCode() {
-        const n = document.getElementById('adm-name').value;
-        const u = document.getElementById('adm-url').value;
-        const t = document.getElementById('adm-type').value;
-        document.getElementById('code-output').innerText = `{ ime: "${n}", tip: "${t}", url: "${u}", datum: "${new Date().toLocaleDateString()}" },`;
+
+    function changeMedia(direction) {
+        const data = currentSource === 'arhiva-kontener' ? MOJA_ARHIVA : COMMUNITY_DATA;
+        const total = data[currentSi].fajlovi.length;
+        currentFi = (currentFi + direction + total) % total;
+        openF(currentSource, currentSi, currentFi);
     }
+
+    function closePreview() { document.getElementById('preview').style.display = 'none'; document.getElementById('media-holder').innerHTML = ""; }
+    function acceptWarning() { document.getElementById('warning-screen').style.display = 'none'; document.getElementById('login').style.display = 'flex'; }
+    function check() { const p = document.getElementById('pass').value; if(p === USER_PASS || p === ADMIN_PASS) { document.getElementById('login').style.display = 'none'; document.getElementById('main').style.display = 'block'; if(p === ADMIN_PASS) document.getElementById('admin-btn').style.display = 'inline-block'; load(); } else { alert("ACCESS DENIED"); } }
+    function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function load() { renderGrid(MOJA_ARHIVA, 'arhiva-kontener'); renderGrid(COMMUNITY_DATA, 'community-kontener'); }
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    
+    // Background Animation
     const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d'); let pts = [];
     function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.onresize = init; init();
