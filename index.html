@@ -18,11 +18,21 @@
         .card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green); transform: scale(1.02); }
         .card img, .card video { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #222; margin-bottom: 10px; pointer-events: none; }
         
-        /* POPRAVLJEN MODAL ZA VIDEO */
+        /* MODAL I STRELICE */
         #preview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; padding: 20px; text-align: center; }
-        .modal-box { position: relative; max-width: 900px; width: 95%; margin: 50px auto; border: 1px solid var(--green); background: #000; padding: 10px; box-shadow: 0 0 30px rgba(0,255,65,0.2); }
-        #preview-content { width: 100%; height: 70vh; border: none; background: #000; }
+        .modal-box { position: relative; max-width: 1000px; width: 95%; margin: 30px auto; border: 1px solid var(--green); background: #000; padding: 10px; box-shadow: 0 0 30px rgba(0,255,65,0.2); }
+        #preview-content { width: 100%; height: 75vh; border: none; background: #000; }
         .close-btn { position: absolute; top: -50px; right: 0; font-size: 50px; cursor: pointer; color: var(--green); }
+        
+        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 60px; color: var(--green); cursor: pointer; user-select: none; padding: 20px; transition: 0.3s; z-index: 2100; }
+        .nav-arrow:hover { text-shadow: 0 0 15px var(--green); scale: 1.2; }
+        .arrow-left { left: -80px; }
+        .arrow-right { right: -80px; }
+
+        @media (max-width: 1100px) {
+            .nav-arrow { position: static; transform: none; display: inline-block; margin: 10px 40px; }
+            .arrow-left, .arrow-right { left: auto; right: auto; }
+        }
         
         #login { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; text-align: center; }
         .box { border: 2px solid var(--green); padding: 40px; background: #0a0a0a; box-shadow: 0 0 20px var(--green); }
@@ -54,7 +64,7 @@
     <div id="panel" class="section active">
         <h1>SYSTEM READY</h1>
         <div style="border: 1px dashed var(--green); padding: 20px;">
-            <p>> NAPOMENA:Svi snimci su digitalno osvetljeni i audio je filtriran radi bolje preglednosti.</p>
+            <p>> NAPOMENA: Svi snimci su digitalno osvetljeni i audio je filtriran radi bolje preglednosti.</p>
             <p>> ADMIN: SINHRONIZOVAN</p>
             <p>> LOKACIJA FAJLOVA: D:\URBEX</p>
         </div>
@@ -68,6 +78,8 @@
 
 <div id="preview">
     <div class="modal-box">
+        <span class="nav-arrow arrow-left" onclick="prevM()">&#10094;</span>
+        <span class="nav-arrow arrow-right" onclick="nextM()">&#10095;</span>
         <span class="close-btn" onclick="closePreview()">&times;</span>
         <h2 id="preview-title" style="margin-bottom: 15px; color: var(--green); letter-spacing: 2px;"></h2>
         <div id="media-holder"></div>
@@ -75,88 +87,88 @@
 </div>
 
 <script>
-    // --- OVDE DODAJES SVOJE SNIMKE I SEKCIJE ---
     const MOJA_ARHIVA = [
-{
-        naslovSekcije: "-VIDEI-SEKCIJA 1 - ŠTAMPARIJA",
-        fajlovi: [
-            { ime: "PRIMER SLIKA", tip: "slika", url: "https://via.placeholder.com/800x600?text=Stamparija+Slika", datum: "17.02.2026." }
-        ]
-    },
-    {
-        naslovSekcije: "SEKCIJA 2 - PIVARA",
-        fajlovi: [
-            { ime: "PRIMER VIDEO", tip: "video", url: "https://www.w3schools.com/html/movie.mp4", datum: "17.02.2026." }
-        ]
-    },
-    {
-        naslovSekcije: "SEKCIJA 3 - OBLAST 013",
-        fajlovi: [
-            { ime: "NAPUŠTENA FABRIKA", tip: "slika", url: "https://drive.google.com/thumbnail?id=1V_HXbEJjy9SvBBmKY_eYECQ0CuO-Zvbw&sz=w1000", datum: "14.12.2025." }
-        ]
-    },
-    {
-        naslovSekcije: "SEKCIJA 4 - NAPUŠTENA KLANICA",
-        fajlovi: [
-            { ime: "KLANICA VIDEO", tip: "video", url: "https://www.w3schools.com/html/mov_bbb.mp4", datum: "17.02.2026." }
-        ]
-    },
-    {
-        naslovSekcije: "-SLIKE-SEKCIJA 5 - ARHIVA SLIKA",
-        fajlovi: [
-            { ime: "Slika 1", tip: "slika", url: "https://drive.google.com/thumbnail?id=17syPiLTIjU4UO8TRnQyht4eLtEW2YKNL&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 2", tip: "slika", url: "https://drive.google.com/thumbnail?id=1590QaofLiEZyTW4mnowOsyFVY2ue2LrA&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 3", tip: "slika", url: "https://drive.google.com/thumbnail?id=1iYP2REvF7QMzAq80ONWCnpYEWerd5JL_&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 4", tip: "slika", url: "https://drive.google.com/thumbnail?id=1_ei_KjVurEyHyG4kyV0yKyG5t0_upblz&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 5", tip: "slika", url: "https://drive.google.com/thumbnail?id=1Krk5B-oGvzDr0IhxVqBvwsyYTEGXOUM8&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 6", tip: "slika", url: "https://drive.google.com/thumbnail?id=1mzCsQpyvcqUfISt3FusP6J6Mz7r6LauX&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 7", tip: "slika", url: "https://drive.google.com/thumbnail?id=1p8IOBBHNVCmONZsU01UiiPzj9olttW3e&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 8", tip: "slika", url: "https://drive.google.com/thumbnail?id=1s3yzr2GFE0LwEhU9Q6-Q2qSFDXM_oie9&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 9", tip: "slika", url: "https://drive.google.com/thumbnail?id=1pp1QwAspsuOIhPOQVCY87C3Kvz8aC2rv&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 10", tip: "slika", url: "https://drive.google.com/thumbnail?id=17mP28kD-EkpO4uXq6slsPtQSVThJmT-8&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 11", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 12", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 13", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 14", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 15", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 16", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 17", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 18", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 19", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 20", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 21", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 22", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 23", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 24", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 25", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 26", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 27", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 28", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 29", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 30", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 31", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 32", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 33", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 34", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 35", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 36", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 37", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 38", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 39", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 40", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 41", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 42", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 43", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 44", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 45", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
-            { ime: "Slika 46", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" }
-        ]
-    }
-];
+        {
+            naslovSekcije: "-VIDEI-SEKCIJA 1 - ŠTAMPARIJA",
+            fajlovi: [
+                { ime: "PRIMER SLIKA", tip: "slika", url: "https://via.placeholder.com/800x600?text=Stamparija+Slika", datum: "17.02.2026." }
+            ]
+        },
+        {
+            naslovSekcije: "SEKCIJA 2 - PIVARA",
+            fajlovi: [
+                { ime: "PRIMER VIDEO", tip: "video", url: "https://www.w3schools.com/html/movie.mp4", datum: "17.02.2026." }
+            ]
+        },
+        {
+            naslovSekcije: "SEKCIJA 3 - OBLAST 013",
+            fajlovi: [
+                { ime: "NAPUŠTENA FABRIKA", tip: "slika", url: "https://drive.google.com/thumbnail?id=1V_HXbEJjy9SvBBmKY_eYECQ0CuO-Zvbw&sz=w1000", datum: "14.12.2025." }
+            ]
+        },
+        {
+            naslovSekcije: "SEKCIJA 4 - NAPUŠTENA KLANICA",
+            fajlovi: [
+                { ime: "KLANICA VIDEO", tip: "video", url: "https://www.w3schools.com/html/mov_bbb.mp4", datum: "17.02.2026." }
+            ]
+        },
+        {
+            naslovSekcije: "-SLIKE-SEKCIJA 5 - ARHIVA SLIKA",
+            fajlovi: [
+                { ime: "Slika 1", tip: "slika", url: "https://drive.google.com/thumbnail?id=17syPiLTIjU4UO8TRnQyht4eLtEW2YKNL&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 2", tip: "slika", url: "https://drive.google.com/thumbnail?id=1590QaofLiEZyTW4mnowOsyFVY2ue2LrA&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 3", tip: "slika", url: "https://drive.google.com/thumbnail?id=1iYP2REvF7QMzAq80ONWCnpYEWerd5JL_&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 4", tip: "slika", url: "https://drive.google.com/thumbnail?id=1_ei_KjVurEyHyG4kyV0yKyG5t0_upblz&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 5", tip: "slika", url: "https://drive.google.com/thumbnail?id=1Krk5B-oGvzDr0IhxVqBvwsyYTEGXOUM8&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 6", tip: "slika", url: "https://drive.google.com/thumbnail?id=1mzCsQpyvcqUfISt3FusP6J6Mz7r6LauX&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 7", tip: "slika", url: "https://drive.google.com/thumbnail?id=1p8IOBBHNVCmONZsU01UiiPzj9olttW3e&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 8", tip: "slika", url: "https://drive.google.com/thumbnail?id=1s3yzr2GFE0LwEhU9Q6-Q2qSFDXM_oie9&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 9", tip: "slika", url: "https://drive.google.com/thumbnail?id=1pp1QwAspsuOIhPOQVCY87C3Kvz8aC2rv&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 10", tip: "slika", url: "https://drive.google.com/thumbnail?id=17mP28kD-EkpO4uXq6slsPtQSVThJmT-8&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 11", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 12", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 13", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 14", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 15", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 16", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 17", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 18", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 19", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 20", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 21", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 22", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 23", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 24", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 25", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 26", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 27", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 28", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 29", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 30", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 31", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 32", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 33", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 34", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 35", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 36", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 37", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 38", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 39", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 40", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 41", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 42", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 43", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 44", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 45", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" },
+                { ime: "Slika 46", tip: "slika", url: "https://drive.google.com/thumbnail?id=PASTE_ID_OVDE&sz=w1000", datum: "NEPOZNATO" }
+            ]
+        }
+    ];
 
     const SIFRA = "29012026kontrola";
+    let curS = 0; let curF = 0; // Trenutna sekcija i fajl
 
-    // --- LOGIKA POZADINE (MATRIX) ---
+    // MATRIX BG
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
@@ -179,7 +191,7 @@
     init(); for(let i=0;i<80;i++) pts.push(new Pt()); draw();
     window.addEventListener('resize', init);
 
-    // --- FUNKCIJE SAJTA ---
+    // SISTEM
     function check() { 
         if(document.getElementById('pass').value === SIFRA) { 
             document.getElementById('login').style.display='none'; 
@@ -188,6 +200,7 @@
         } else { alert("ACCESS DENIED"); } 
     }
     function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    
     function load() {
         const cont = document.getElementById('arhiva-kontener'); cont.innerHTML = "";
         MOJA_ARHIVA.forEach((s, si) => {
@@ -198,32 +211,54 @@
             });
         });
     }
+
     function openF(si, fi) {
+        curS = si; curF = fi;
         const f = MOJA_ARHIVA[si].fajlovi[fi];
         document.getElementById('preview-title').innerText = f.ime;
         const holder = document.getElementById('media-holder');
         
         if(f.tip === 'video') {
-            // Dodajemo sandbox i dozvole da bi video radio lakše
             holder.innerHTML = `<iframe id="preview-content" src="${f.url}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
         } else {
             holder.innerHTML = `<img id="preview-content" src="${f.url}" style="object-fit: contain;">`;
         }
         document.getElementById('preview').style.display = 'block';
     }
+
+    // NAVIGACIJA KROZ SLIKE
+    function nextM() {
+        curF++;
+        if(curF >= MOJA_ARHIVA[curS].fajlovi.length) {
+            // Prelazi na sledeću sekciju ili se vraća na početak prve
+            curF = 0; 
+            curS = (curS + 1) % MOJA_ARHIVA.length;
+        }
+        openF(curS, curF);
+    }
+
+    function prevM() {
+        curF--;
+        if(curF < 0) {
+            curS = (curS - 1 + MOJA_ARHIVA.length) % MOJA_ARHIVA.length;
+            curF = MOJA_ARHIVA[curS].fajlovi.length - 1;
+        }
+        openF(curS, curF);
+    }
+
     function closePreview() {
-        document.getElementById('media-holder').innerHTML = ""; // Gasimo video kad zatvorimo
+        document.getElementById('media-holder').innerHTML = "";
         document.getElementById('preview').style.display = 'none';
     }
+
+    // TASTATURA KOMANDE
+    window.addEventListener('keydown', (e) => {
+        if(document.getElementById('preview').style.display === 'block') {
+            if(e.key === "ArrowRight") nextM();
+            if(e.key === "ArrowLeft") prevM();
+            if(e.key === "Escape") closePreview();
+        }
+    });
 </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
